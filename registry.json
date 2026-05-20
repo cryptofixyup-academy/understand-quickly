@@ -9,7 +9,7 @@
       "default_branch": "main",
       "format": "generic@1",
       "graph_url": "https://raw.githubusercontent.com/cryptofixyup/understand-quickly/main/site/graphs/affaan-m-ECC.json",
-      "description": "Everything Claude Code — 232 skills, 60 agents, 75 commands, hooks, rules, and contexts for Claude Code.",
+      "description": "The open-agent-harness ecosystem — 232 skills, 60 agents, 75 commands, hooks, and rules. 182K+ GitHub stars.",
       "tags": [
         "claude-code",
         "skills",
