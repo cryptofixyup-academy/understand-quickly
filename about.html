@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>understand-quickly · about</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="About understand-quickly — README and design overview.">
+  <meta name="theme-color" content="#0a0a0a">
+
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://static.cloudflareinsights.com; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self';">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap">
+
+  <link rel="stylesheet" href="./styles.css?v=20260507h">
+</head>
+<body>
+  <header class="topbar" role="banner">
+    <a class="brand" href="./" aria-label="understand-quickly home">
+      <span class="brand-mark"><span class="brand-emoji" aria-hidden="true">&#129504;</span>understand-quickly</span>
+    </a>
+    <span></span>
+    <nav class="topbar-actions" aria-label="Site">
+      <a href="./">Registry</a>
+      <a href="https://github.com/looptech-ai/understand-quickly" rel="noopener">GitHub</a>
+      <a class="cta-add-repo" href="./add.html" aria-label="Add your repo">
+        <span class="cta-add-repo-text">+ Add your repo</span>
+        <span class="cta-add-repo-icon" aria-hidden="true">+</span>
+      </a>
+    </nav>
+  </header>
+
+  <div class="about-shell">
+    <a class="about-back" href="./">&larr; Back to registry</a>
+    <article class="markdown-body">
+      <!-- BEGIN README -->
+<div align="center">
+
+<h1>🧠 understand-quickly</h1>
+<p><strong>A public, machine-readable registry of code-knowledge graphs.</strong></p>
+<p>Point AI agents at any indexed repo and they get a current, schema-validated graph — one URL, one fetch.</p>
+<p><a href="https://github.com/looptech-ai/understand-quickly/actions/workflows/sync.yml"><img src="https://github.com/looptech-ai/understand-quickly/actions/workflows/sync.yml/badge.svg" alt="sync"></a>
+<a href="https://looptech-ai.github.io/understand-quickly/"><img src="https://github.com/looptech-ai/understand-quickly/actions/workflows/pages.yml/badge.svg" alt="pages"></a>
+<a href="https://github.com/looptech-ai/understand-quickly/releases"><img src="https://img.shields.io/github/v/release/looptech-ai/understand-quickly?label=release&sort=semver" alt="release"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache 2.0"></a>
+<a href="DATA-LICENSE.md"><img src="https://img.shields.io/badge/Data%20License-UQ--Data%201.0-orange.svg" alt="Data License"></a>
+<a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome"></a>
+<a href="https://github.com/looptech-ai/understand-quickly/issues"><img src="https://img.shields.io/github/issues/looptech-ai/understand-quickly" alt="issues"></a>
+<a href="https://github.com/looptech-ai/understand-quickly/commits/main"><img src="https://img.shields.io/github/last-commit/looptech-ai/understand-quickly" alt="last commit"></a></p>
+<p><a href="https://looptech-ai.github.io/understand-quickly/"><strong>Browse →</strong></a> · <a href="https://looptech-ai.github.io/understand-quickly/add.html"><strong>Add your repo (wizard)</strong></a> · <a href="#quickstart"><strong>Quickstart</strong></a> · <a href="docs/faq.md"><strong>FAQ (plain English)</strong></a> · <a href="CONTRIBUTING.md"><strong>Contributing</strong></a></p>
+</div>
+
+<hr>
+<h2>New here? Read this first 👋</h2>
+<p><strong>It&#39;s a public directory of &quot;map files&quot; for codebases.</strong> Each entry points at a JSON file (a <em>knowledge graph</em> or <em>context bundle</em>) that describes a project&#39;s structure — files, functions, modules, how they connect — in a shape that AI tools can read in one network request.</p>
+<p>If you&#39;re a <strong>project maintainer</strong>, you can add your repo so AI assistants can understand it instantly. If you&#39;re an <strong>AI agent or tooling developer</strong>, you can fetch any indexed graph by URL with no auth and no SDK.</p>
+<ul>
+<li><strong>No code required to be listed.</strong> Use the <a href="https://looptech-ai.github.io/understand-quickly/add.html">wizard</a> — fill four fields, the bot opens the PR.</li>
+<li><strong>No infrastructure, no costs.</strong> Graphs stay in your repo; we only store pointers.</li>
+<li><strong>Open and public.</strong> Apache 2.0 code; permissive <a href="DATA-LICENSE.md">Data License</a> for the registry.</li>
+</ul>
+<blockquote>
+<p>First time? The <a href="docs/faq.md">FAQ</a> answers &quot;what is a knowledge graph?&quot;, &quot;do I need this?&quot;, and &quot;what happens after I submit?&quot; in plain language.</p>
+</blockquote>
+<hr>
+<h2>Quickstart</h2>
+<h3>I&#39;m an AI agent / SDK user</h3>
+<pre><code class="language-bash">curl -fsSL https://looptech-ai.github.io/understand-quickly/registry.json
+</code></pre>
+<p>Pick entries with <code>status: &quot;ok&quot;</code>. Fetch <code>entry.graph_url</code>. Cache by <code>last_sha</code>. That&#39;s the whole API.</p>
+<h3>I want to register my repo</h3>
+<p>Pick the path that fits:</p>
+<ul>
+<li>🖱️ <strong>Wizard:</strong> <a href="https://looptech-ai.github.io/understand-quickly/add.html">Add your repo →</a>. Fills the issue for you; the bot opens the PR.</li>
+<li>💻 <strong>CLI:</strong> <code>npx @understand-quickly/cli add</code> — auto-detects everything. (<a href="https://www.npmjs.com/package/@understand-quickly/cli">npm</a>)</li>
+<li>✍️ <strong>Manual PR:</strong> see <a href="#add-your-repo">Add your repo</a> below.</li>
+</ul>
+<h3>I want to use it from Claude / Codex / Cursor (MCP)</h3>
+<pre><code class="language-jsonc">{
+  &quot;mcpServers&quot;: {
+    &quot;understand-quickly&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;tsx&quot;, &quot;/path/to/understand-quickly/mcp/src/index.ts&quot;]
+    }
+  }
+}
+</code></pre>
+<p>Tools: <code>list_repos</code>, <code>get_graph</code>, <code>search_concepts</code>. See <a href="mcp/README.md"><code>mcp/README.md</code></a>.</p>
+<h3>I&#39;m a developer / contributor</h3>
+<pre><code class="language-bash">git clone https://github.com/looptech-ai/understand-quickly
+cd understand-quickly
+npm install &amp;&amp; npm test
+</code></pre>
+<p>Then read <a href="CONTRIBUTING.md"><code>CONTRIBUTING.md</code></a>.</p>
+<hr>
+<h2>How it works</h2>
+<pre><code>                 ┌──────────────────────┐
+                 │   looptech-ai/       │
+                 │  understand-quickly  │
+                 │                      │
+                 │  registry.json       │ ← canonical pointers
+                 │  schemas/            │ ← per-format JSON Schemas
+                 │  README.md           │ ← auto-rendered table
+                 └────────┬─────────────┘
+            PR / dispatch │ raw.githubusercontent.com
+                          │
+        ┌─────────────────┴───────────────────┐
+        ▼                                     ▼
+┌──────────────────┐                  ┌─────────────────────┐
+│ Source repo with │                  │ AI agent / MCP /    │
+│ knowledge graph  │                  │ human reader        │
+└──────────────────┘                  └─────────────────────┘
+</code></pre>
+<ul>
+<li><strong>Storage:</strong> graphs live in source repos. The registry stores only pointers.</li>
+<li><strong>Validation:</strong> every PR runs schema checks on <code>registry.json</code> and the graph body.</li>
+<li><strong>Freshness:</strong> nightly sync resyncs every entry; source repos can opt-in to instant refresh via <code>repository_dispatch</code>.</li>
+</ul>
+<h2>Supported formats</h2>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Source tool</th>
+<th>Tier</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>understand-anything@1</code></td>
+<td><a href="https://github.com/Lum1104/Understand-Anything">Understand-Anything</a></td>
+<td>first-class</td>
+</tr>
+<tr>
+<td><code>gitnexus@1</code></td>
+<td><a href="https://github.com/abhigyanpatwari/GitNexus">GitNexus</a></td>
+<td>first-class</td>
+</tr>
+<tr>
+<td><code>code-review-graph@1</code></td>
+<td><a href="https://github.com/tirth8205/code-review-graph">code-review-graph</a></td>
+<td>first-class</td>
+</tr>
+<tr>
+<td><code>bundle@1</code></td>
+<td>repo-context packers (<a href="https://github.com/yamadashy/repomix">Repomix</a>, <a href="https://github.com/cyclotruc/gitingest">gitingest</a>, <a href="https://github.com/kamilstanuch/codebase-digest">codebase-digest</a>, …)</td>
+<td>first-class</td>
+</tr>
+<tr>
+<td><code>generic@1</code></td>
+<td>any <code>{nodes, edges}</code> graph</td>
+<td>fallback</td>
+</tr>
+</tbody></table>
+<p>Adding a new format: PR <code>schemas/&lt;name&gt;@&lt;int&gt;.json</code> + an <code>ok</code> and <code>bad</code> fixture under <code>schemas/__fixtures__/&lt;name&gt;/</code>. Full instructions in <a href="CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
+<p>Upstream tools that produce these formats can integrate via <a href="docs/integrations/protocol.md">the integration protocol</a>. PR templates are in <code>docs/integrations/</code>.</p>
+<h3>Integrating an upstream tool</h3>
+<p>Easiest path: drop the <a href="https://github.com/looptech-ai/uq-publish-action"><code>looptech-ai/uq-publish-action</code></a> into your release/build workflow.</p>
+<pre><code class="language-yaml">- uses: looptech-ai/uq-publish-action@v0.1.0
+  with:
+    graph-path: &#39;.your-tool/graph.json&#39;
+    format: &#39;your-format@1&#39;
+    token: ${{ secrets.UNDERSTAND_QUICKLY_TOKEN }}
+</code></pre>
+<p>The Action stamps <code>metadata.{tool, tool_version, generated_at, commit}</code> into the graph and fires a <code>repository_dispatch</code> (<code>event_type=sync-entry</code>) at this registry. See <a href="docs/integrations/protocol.md"><code>docs/integrations/protocol.md</code></a> for the full producer contract.</p>
+<h3>Embed an indexed-by badge</h3>
+<p>Once registered, link a status badge in your repo&#39;s README:</p>
+<pre><code class="language-markdown">[![indexed by understand-quickly](https://looptech-ai.github.io/understand-quickly/badges/&lt;owner&gt;--&lt;repo&gt;.svg)](https://looptech-ai.github.io/understand-quickly/?entry=&lt;owner&gt;/&lt;repo&gt;)
+</code></pre>
+<p>Lower-case the owner/repo and replace <code>/</code> with <code>--</code>. The badge auto-updates as your entry&#39;s status changes.</p>
+<h3>Discovery (<code>.well-known/code-graph</code>)</h3>
+<p>Agents can discover this registry&#39;s contents without going through <code>registry.json</code>:</p>
+<pre><code class="language-bash">curl -fsSL https://looptech-ai.github.io/understand-quickly/.well-known/repos.json
+# returns { schema_version, repos: [{id, format, graph_url, last_synced, status, source_sha}] }
+</code></pre>
+<p>To make YOUR repo discoverable without registering here, publish a <code>.well-known/code-graph.json</code> at the root of your repo. See the <a href="docs/spec/code-graph-protocol.md">Code-Knowledge-Graph Protocol spec</a>.</p>
+<h2>Add your repo</h2>
+<p>The fastest path is the <a href="https://looptech-ai.github.io/understand-quickly/add.html">wizard</a> or <code>npx @understand-quickly/cli add</code>. The manual flow:</p>
+<ol>
+<li><p>Run a <a href="#supported-formats">supported tool</a> locally and commit its output to your repo.</p>
+</li>
+<li><p>Fork this repo.</p>
+</li>
+<li><p>Append an entry to <code>registry.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;you/yourrepo&quot;,
+  &quot;owner&quot;: &quot;you&quot;,
+  &quot;repo&quot;: &quot;yourrepo&quot;,
+  &quot;format&quot;: &quot;understand-anything@1&quot;,
+  &quot;graph_url&quot;: &quot;https://raw.githubusercontent.com/you/yourrepo/main/.understand-anything/knowledge-graph.json&quot;,
+  &quot;description&quot;: &quot;one-liner about your project&quot;,
+  &quot;tags&quot;: [&quot;python&quot;, &quot;agents&quot;]
+}
+</code></pre>
+</li>
+<li><p>Open a PR. Validation runs automatically.</p>
+</li>
+</ol>
+<h3>Optional: instant refresh on push</h3>
+<p>Drop <a href="docs/publish-template.yml"><code>docs/publish-template.yml</code></a> into your repo as <code>.github/workflows/understand-quickly-publish.yml</code>. Add a fine-grained <code>UNDERSTAND_QUICKLY_TOKEN</code> PAT (scoped to <code>repository_dispatch</code> on this registry) to your repo secrets. Every push that touches your graph file triggers an immediate registry sync.</p>
+<h2>Registry</h2>
+<blockquote>
+<p>Auto-generated. Do not hand-edit between the markers.</p>
+</blockquote>
+<!-- BEGIN ENTRIES -->
+<table>
+<thead>
+<tr>
+<th>Repo</th>
+<th>Format</th>
+<th>Description</th>
+<th align="center">Status</th>
+<th>Last synced</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/affaan-m/ECC">affaan-m/ECC</a></td>
+<td><code>generic@1</code></td>
+<td>Everything Claude Code: the open-agent-harness ecosystem — 232 skills, 60 agents, 75 commands, hooks, and rules. 182K+ GitHub stars.</td>
+<td align="center">🆕 pending</td>
+<td>—</td>
+</tr>
+<tr>
+<td><a href="https://github.com/understand-quickly/demo-code-review-graph">understand-quickly/demo-code-review-graph</a></td>
+<td><code>code-review-graph@1</code></td>
+<td>Demo entry: a sample code-review-graph export covering files, classes, and tests.</td>
+<td align="center">✅ ok</td>
+<td>2026-05-19</td>
+</tr>
+<tr>
+<td><a href="https://github.com/understand-quickly/demo-gitnexus">understand-quickly/demo-gitnexus</a></td>
+<td><code>gitnexus@1</code></td>
+<td>Demo entry: a sample GitNexus graph modeled on its own codebase.</td>
+<td align="center">✅ ok</td>
+<td>2026-05-19</td>
+</tr>
+<tr>
+<td><a href="https://github.com/understand-quickly/demo-understand-anything">understand-quickly/demo-understand-anything</a></td>
+<td><code>understand-anything@1</code></td>
+<td>Demo entry: a hand-built sample knowledge graph in the understand-anything@1 shape.</td>
+<td align="center">✅ ok</td>
+<td>2026-05-19</td>
+</tr>
+</tbody></table>
+<!-- END ENTRIES -->
+
+<h2>Status legend</h2>
+<p>Each entry&#39;s <code>status</code> field tells consumers whether the linked graph is currently usable.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Emoji</th>
+<th>Status</th>
+<th>Meaning</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">🆕</td>
+<td><code>pending</code></td>
+<td>Registered but the registry hasn&#39;t synced it yet.</td>
+<td>Wait for the next sync (≤24h, or fire <code>repository_dispatch</code> for instant).</td>
+</tr>
+<tr>
+<td align="center">✅</td>
+<td><code>ok</code></td>
+<td>Fetched, validated, current.</td>
+<td>Use it.</td>
+</tr>
+<tr>
+<td align="center">🟡</td>
+<td><code>missing</code></td>
+<td>404 in the last sync. Will keep retrying.</td>
+<td>Verify the file exists at the registered URL on the default branch.</td>
+</tr>
+<tr>
+<td align="center">⚠️</td>
+<td><code>invalid</code></td>
+<td>Body failed schema validation.</td>
+<td>Run <code>npm run validate</code> locally; fix the field that fails.</td>
+</tr>
+<tr>
+<td align="center">📦</td>
+<td><code>oversize</code></td>
+<td>Graph exceeds 50 MB; not fetched.</td>
+<td>Slim the graph or split it.</td>
+</tr>
+<tr>
+<td align="center">🔁</td>
+<td><code>transient_error</code></td>
+<td>Network or 5xx; will retry next sync.</td>
+<td>Usually nothing — wait one cycle.</td>
+</tr>
+<tr>
+<td align="center">💀</td>
+<td><code>dead</code></td>
+<td>7+ consecutive misses.</td>
+<td>Re-publish or open an issue to remove the entry.</td>
+</tr>
+<tr>
+<td align="center">↪️</td>
+<td><code>renamed</code></td>
+<td>Superseded by <code>renamed_to</code>.</td>
+<td>Update tooling to point at the new id.</td>
+</tr>
+<tr>
+<td align="center">🚫</td>
+<td><code>revoked</code></td>
+<td>Maintainer-retracted.</td>
+<td>Don&#39;t consume; contact maintainers if unexpected.</td>
+</tr>
+</tbody></table>
+<h2>Development</h2>
+<pre><code class="language-bash">nvm use            # Node 20
+npm install
+npm test           # node:test
+npm run test:coverage
+npm run validate   # validate registry.json + graphs
+npm run sync       # resync all entries (writes registry.json)
+npm run smoke      # dry-run sync against tests/registry-smoke.json
+npm run render     # regenerate README table
+</code></pre>
+<h2>Contributing</h2>
+<p><a href="CONTRIBUTING.md"><code>CONTRIBUTING.md</code></a> walks through every contribution flow. Trusted authors can land registry-only PRs without review — see <a href="docs/verified-publishers.md"><code>docs/verified-publishers.md</code></a>. By participating you agree to the <a href="CODE_OF_CONDUCT.md">Code of Conduct</a>. Security issues: <a href="SECURITY.md"><code>SECURITY.md</code></a>. Security model: see <a href="docs/threat-model.md">threat-model</a>.</p>
+<h2>License</h2>
+<ul>
+<li><strong>Code</strong> — <a href="LICENSE">Apache License 2.0</a> © 2026 Alex Macdonald-Smith and LoopTech.AI. Includes a patent grant and contributor terms.</li>
+<li><strong>Registry data</strong> — <a href="DATA-LICENSE.md">Understand-Quickly Data License 1.0</a>. Anyone can use the registry, including for AI/ML training; in exchange, contributions and submissions grant Alex Macdonald-Smith and LoopTech.AI a perpetual, sublicensable data-use right that travels with any fork or extension. See <a href="DATA-LICENSE.md"><code>DATA-LICENSE.md</code></a> for the full terms.</li>
+<li><strong>NOTICE</strong> file: <a href="NOTICE"><code>NOTICE</code></a>.</li>
+</ul>
+
+
+<!-- END README -->
+    </article>
+  </div>
+
+  <footer class="site-footer" role="contentinfo">
+    <a href="https://github.com/looptech-ai/understand-quickly/blob/main/LICENSE" rel="noopener">Apache 2.0</a>
+    <span>·</span>
+    <a href="https://github.com/looptech-ai/understand-quickly/blob/main/DATA-LICENSE.md" rel="noopener">Data License 1.0</a>
+    <span>·</span>
+    <a href="https://github.com/looptech-ai/understand-quickly" rel="noopener">source</a>
+    <span>·</span>
+    <a href="./schemas/meta.schema.json" rel="noopener">spec</a>
+    <span>·</span>
+    <a href="https://github.com/looptech-ai/understand-quickly/blob/main/docs/faq.md" rel="noopener">FAQ</a>
+  </footer>
+  <script
+    defer
+    src="https://static.cloudflareinsights.com/beacon.min.js"
+    data-cf-beacon='{"token": "PLACEHOLDER_TOKEN", "spa": false}'
+    referrerpolicy="no-referrer-when-downgrade"></script>
+</body>
+</html>

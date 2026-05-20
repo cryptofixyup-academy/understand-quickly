@@ -1,0 +1,29 @@
+# Drop into .github/workflows/understand-quickly-publish.yml in your project.
+# Add a fine-grained PAT (UNDERSTAND_QUICKLY_TOKEN) scoped to
+# `Repository dispatches: write` on looptech-ai/understand-quickly.
+#
+# Replace `graph-path` and `format` with values for your tool. See
+# https://github.com/looptech-ai/uq-publish-action#readme for the full input
+# table and more example workflows (nodejs.yml, python.yml, manual.yml).
+name: understand-quickly publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.understand-anything/**'
+      - '.gitnexus/**'
+      - '.code-review-graph/**'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: looptech-ai/uq-publish-action@v0.1.0
+        with:
+          graph-path: '.understand-anything/knowledge-graph.json'
+          format: 'understand-anything@1'
+          token: ${{ secrets.UNDERSTAND_QUICKLY_TOKEN }}

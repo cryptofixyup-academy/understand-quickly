@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>understand-quickly · registry</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Public, machine-readable registry of code-knowledge graphs. Browse entries, inspect graphs, copy raw URLs for agents.">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://static.cloudflareinsights.com; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self';">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap">
+
+  <link rel="stylesheet" href="./styles.css?v=20260507h">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar" role="banner">
+      <a class="brand" href="./" aria-label="understand-quickly home">
+        <span class="brand-mark"><span class="brand-emoji" aria-hidden="true">&#129504;</span>understand-quickly</span>
+      </a>
+      <form class="topbar-search" id="toolbar" role="search" aria-label="Search">
+        <label class="visually-hidden" for="q">Search</label>
+        <input
+          type="search"
+          id="q"
+          placeholder="Search id, description, or tags… (/)"
+          autocomplete="off">
+        <span class="search-counter" id="search-counter" hidden aria-live="polite"></span>
+      </form>
+      <nav class="topbar-actions" aria-label="Site">
+        <a href="./about.html">About</a>
+        <a href="https://github.com/looptech-ai/understand-quickly" rel="noopener">GitHub</a>
+        <a class="cta-add-repo" href="./add.html" aria-label="Add your repo">
+          <span class="cta-add-repo-text">+ Add your repo</span>
+          <span class="cta-add-repo-icon" aria-hidden="true">+</span>
+        </a>
+      </nav>
+    </header>
+
+    <div class="workspace" id="workspace">
+      <aside class="sidebar" aria-label="Registry entries">
+        <div class="sidebar-head">
+          <div class="sidebar-meta">
+            <span id="results-meta" aria-live="polite">Loading…</span>
+            <span id="generated-at"></span>
+          </div>
+          <label class="visually-hidden" for="format">Format</label>
+          <select class="sidebar-format" id="format" aria-label="Filter by format">
+            <option value="">All formats</option>
+          </select>
+          <fieldset class="status-filter" id="status-filter" aria-label="Filter by status">
+            <legend class="visually-hidden">Status</legend>
+          </fieldset>
+        </div>
+        <div class="sidebar-list" id="cards" role="listbox" aria-label="Registry entries"></div>
+        <div class="sidebar-empty" id="empty" hidden>No entries yet — the registry is empty.</div>
+      </aside>
+
+      <main class="main-pane" id="main" data-main-state="empty">
+        <div id="error" class="error-banner" hidden role="alert"></div>
+        <div class="graph-host" id="graph-host">
+          <div id="graph-canvas" class="graph-state-graph" aria-label="Knowledge graph viewer" role="img"></div>
+          <canvas id="graph-minimap" class="graph-state-graph" hidden aria-hidden="true"></canvas>
+          <div class="graph-empty graph-state-empty" id="graph-empty">
+            <h2>A registry of knowledge graphs.</h2>
+            <p>Pick an entry on the left to load its graph. Each entry points to a public JSON file in the producer's own format — agents fetch the raw URL directly.</p>
+            <div class="endpoint-card" id="endpoint-card">
+              <strong>Agent endpoints</strong>
+              <div><code>GET <a href="./registry.json">./registry.json</a></code> — canonical index</div>
+              <div><code>GET <a href="./schemas/">./schemas/</a></code> — JSON Schemas</div>
+            </div>
+            <div class="actions">
+              <a class="btn btn-primary" href="./add.html">+ Add your repo</a>
+              <a class="btn btn-ghost" href="./about.html">Read the docs</a>
+            </div>
+          </div>
+          <div class="graph-status graph-state-loading graph-state-error" id="graph-status"></div>
+          <button
+            type="button"
+            class="legend-toggle graph-state-graph"
+            id="legend-toggle"
+            hidden
+            aria-expanded="false"
+            aria-controls="graph-legend">
+            <span class="legend-toggle-icon" aria-hidden="true">&#9636;</span>
+            <span class="legend-toggle-label">Show legend</span>
+          </button>
+          <div class="graph-legend graph-state-graph" id="graph-legend" hidden aria-label="Node-type legend"></div>
+          <button type="button" class="restore-hidden-btn graph-state-graph" id="restore-hidden" hidden aria-label="Restore hidden nodes">
+            <span aria-hidden="true">&#8634;</span> Restore hidden (<span id="hidden-count">0</span>)
+          </button>
+          <div class="zoom-controls graph-state-graph" id="zoom-controls" hidden>
+            <button type="button" id="zoom-in" aria-label="Zoom in" title="Zoom in">+</button>
+            <button type="button" id="zoom-out" aria-label="Zoom out" title="Zoom out">−</button>
+            <button type="button" id="zoom-fit" aria-label="Fit graph" title="Fit">⤢</button>
+          </div>
+          <button type="button" class="tour-start-btn graph-state-graph" id="tour-start" hidden aria-label="Start guided tour">
+            <span class="tour-start-icon" aria-hidden="true">&#9658;</span>
+            <span>Start tour</span>
+          </button>
+          <div class="layout-toggle graph-state-graph" id="layout-toggle" role="group" aria-label="Layout" hidden>
+            <button type="button" data-layout="force" aria-pressed="true" title="Force layout">Force</button>
+            <button type="button" data-layout="hierarchy" aria-pressed="false" title="Hierarchy layout">Hier</button>
+            <button type="button" data-layout="circle" aria-pressed="false" title="Circle layout">Circle</button>
+            <button type="button" data-layout="tree" aria-pressed="false" title="Tree layout">Tree</button>
+          </div>
+          <button type="button" class="details-pill" id="details-pill" hidden aria-label="Show entry details">
+            <span class="details-pill-icon" aria-hidden="true">&#9776;</span>
+            <span>Details</span>
+          </button>
+          <section
+            class="tour-panel"
+            id="tour-panel"
+            role="region"
+            aria-label="Guided tour"
+            hidden
+            tabindex="-1">
+            <div class="tour-panel-handle" id="tour-panel-handle" aria-hidden="true"></div>
+            <header class="tour-panel-head">
+              <span class="tour-title" id="tour-title">Guided tour</span>
+              <span class="tour-kind-chip" id="tour-kind" data-kind=""></span>
+              <button type="button" class="tour-exit" id="tour-exit" aria-label="Exit tour" title="Exit tour (Esc)">&times;</button>
+            </header>
+            <div class="tour-progress-row">
+              <span class="tour-counter" id="tour-counter" aria-live="polite">1 of 1</span>
+              <div class="tour-progress" aria-hidden="true">
+                <div class="tour-progress-bar" id="tour-progress-bar"></div>
+              </div>
+            </div>
+            <div class="tour-panel-body" id="tour-panel-body">
+              <article class="tour-active-card" aria-label="Active step">
+                <div class="tour-label" id="tour-label"></div>
+                <p class="tour-text" id="tour-text"></p>
+                <a class="tour-discuss-link" id="tour-discuss" hidden href="#" rel="noopener" target="_blank" title="Open Discussions tagged with this entry id.">Discuss &#8599;</a>
+                <a class="tour-github-link" id="tour-github" hidden href="#" rel="noopener" target="_blank">View on GitHub &#8599;</a>
+              </article>
+              <section class="tour-section tour-neighbors-section" id="tour-neighbors-section" hidden aria-label="Neighbors">
+                <h4 class="tour-section-title">Neighbors</h4>
+                <ul class="tour-neighbors" id="tour-neighbors"></ul>
+              </section>
+              <section class="tour-section tour-related-section" id="tour-related-section" hidden aria-label="Related concepts">
+                <h4 class="tour-section-title">Related concepts</h4>
+                <div class="tour-related" id="tour-related"></div>
+              </section>
+              <section class="tour-section tour-outline-section" id="tour-outline-section" aria-label="Tour outline">
+                <button type="button" class="tour-outline-toggle" id="tour-outline-toggle" aria-expanded="true" aria-controls="tour-outline">
+                  <span>Outline</span>
+                  <span class="tour-outline-caret" aria-hidden="true">&#9662;</span>
+                </button>
+                <ul class="tour-outline" id="tour-outline" role="listbox" aria-label="All tour steps"></ul>
+              </section>
+            </div>
+            <div class="tour-live" id="tour-live" aria-live="polite" aria-atomic="true"></div>
+            <footer class="tour-controls">
+              <div class="tour-controls-row tour-controls-primary">
+                <button type="button" class="tour-btn tour-prev" id="tour-prev" aria-label="Previous step" title="Previous (←)">
+                  <span aria-hidden="true">&larr;</span>
+                  <span class="tour-btn-label">Prev</span>
+                </button>
+                <button type="button" class="tour-btn tour-pause" id="tour-pause" aria-label="Pause auto-advance" title="Pause/Resume (p)">
+                  <span class="tour-pause-icon" aria-hidden="true">&#9658;</span>
+                  <span class="tour-btn-label" id="tour-pause-label">Play</span>
+                </button>
+                <button type="button" class="tour-btn tour-next" id="tour-next" aria-label="Next step" title="Next (→ or Space)">
+                  <span class="tour-btn-label">Next</span>
+                  <span aria-hidden="true">&rarr;</span>
+                </button>
+              </div>
+              <div class="tour-controls-row tour-controls-secondary" id="tour-controls-secondary">
+                <label class="tour-speed" id="tour-speed-wrap" title="Auto-advance speed (+/-)">
+                  <span class="tour-speed-label">Speed</span>
+                  <select class="tour-speed-select" id="tour-speed" aria-label="Auto-advance speed">
+                    <option value="0.5">0.5&times;</option>
+                    <option value="1" selected>1&times;</option>
+                    <option value="1.5">1.5&times;</option>
+                    <option value="2">2&times;</option>
+                  </select>
+                </label>
+              </div>
+            </footer>
+          </section>
+          <div class="tour-step-strip" id="tour-step-strip" hidden aria-label="Tour step strip"></div>
+        </div>
+      </main>
+
+      <div class="detail-scrim" id="detail-scrim" hidden></div>
+      <aside class="detail-pane" id="detail" role="dialog" aria-label="Entry details" aria-modal="false" hidden>
+        <div class="detail-drag-handle" id="detail-drag-handle" aria-hidden="true"></div>
+        <header class="detail-head">
+          <div>
+            <h2 class="detail-title" id="detail-title">Entry</h2>
+            <div class="detail-sub" id="detail-sub"></div>
+          </div>
+          <button type="button" class="detail-close" id="detail-close" aria-label="Close detail pane">&times;</button>
+        </header>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </div>
+
+    <footer class="site-footer" role="contentinfo">
+      <a href="https://github.com/looptech-ai/understand-quickly/blob/main/LICENSE" rel="noopener">Apache 2.0</a>
+      <span>·</span>
+      <a href="https://github.com/looptech-ai/understand-quickly/blob/main/DATA-LICENSE.md" rel="noopener">Data License 1.0</a>
+      <span>·</span>
+      <a href="https://github.com/looptech-ai/understand-quickly" rel="noopener">source</a>
+      <span>·</span>
+      <a href="./schemas/meta.schema.json" rel="noopener">spec</a>
+      <span>·</span>
+      <a href="https://github.com/looptech-ai/understand-quickly/blob/main/docs/faq.md" rel="noopener">FAQ</a>
+    </footer>
+
+    <div id="diag" hidden></div>
+
+    <div class="ctx-menu" id="ctx-menu" role="menu" hidden></div>
+
+    <div class="cheatsheet-overlay" id="cheatsheet-overlay" hidden role="dialog" aria-label="Keyboard shortcuts" aria-modal="true">
+      <div class="cheatsheet" id="cheatsheet" tabindex="-1">
+        <header class="cheatsheet-head">
+          <h2>Keyboard shortcuts</h2>
+          <button type="button" id="cheatsheet-close" class="cheatsheet-close" aria-label="Close cheatsheet">&times;</button>
+        </header>
+        <div class="cheatsheet-body">
+          <dl>
+            <dt><kbd>?</kbd></dt><dd>Open this cheatsheet</dd>
+            <dt><kbd>/</kbd></dt><dd>Focus search</dd>
+            <dt><kbd>t</kbd></dt><dd>Start tour</dd>
+            <dt><kbd>f</kbd></dt><dd>Fit graph</dd>
+            <dt><kbd>c</kbd></dt><dd>Center selected node</dd>
+            <dt><kbd>1</kbd>&hellip;<kbd>9</kbd></dt><dd>Toggle nth legend chip</dd>
+            <dt><kbd>[</kbd> / <kbd>]</kbd></dt><dd>Previous / next sidebar entry</dd>
+            <dt><kbd>g</kbd> <kbd>g</kbd></dt><dd>Jump to first sidebar entry</dd>
+            <dt><kbd>Esc</kbd></dt><dd>Close any overlay</dd>
+            <dt class="tour-only-help"><kbd>&larr;</kbd>/<kbd>&rarr;</kbd> &middot; <kbd>p</kbd></dt><dd class="tour-only-help">Tour: prev/next &middot; play-pause</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js?v=20260507h"></script>
+  <script
+    defer
+    src="https://static.cloudflareinsights.com/beacon.min.js"
+    data-cf-beacon='{"token": "PLACEHOLDER_TOKEN", "spa": false}'
+    referrerpolicy="no-referrer-when-downgrade"></script>
+</body>
+</html>
