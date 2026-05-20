@@ -5,6 +5,7 @@ import {
   clearCache,
   clearStatsCache,
   filterEntries,
+  findEntryById,
   loadRegistry,
   loadStats,
 } from "../src/registry.ts";
@@ -143,6 +144,27 @@ describe("loadRegistry caching", () => {
     });
 
     assert.equal(result, registry, "stale cache should be returned on 5xx");
+  });
+});
+
+describe("findEntryById", () => {
+  const registry = makeRegistry();
+
+  it("finds an entry by exact id", () => {
+    const entry = findEntryById(registry, "alice/python-graph");
+    assert.ok(entry);
+    assert.equal(entry.id, "alice/python-graph");
+  });
+
+  it("finds an entry case-insensitively (uppercase repo name)", () => {
+    const entry = findEntryById(registry, "Alice/Python-Graph");
+    assert.ok(entry, "should find entry regardless of casing");
+    assert.equal(entry!.id, "alice/python-graph");
+  });
+
+  it("returns undefined when no entry matches", () => {
+    const entry = findEntryById(registry, "nobody/nothing");
+    assert.equal(entry, undefined);
   });
 });
 
