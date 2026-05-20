@@ -3,6 +3,19 @@
   "generated_at": "2026-05-19T06:53:15.711Z",
   "entries": [
     {
+      "id": "openai/openai-responses-starter-app",
+      "owner": "openai",
+      "repo": "openai-responses-starter-app",
+      "default_branch": "main",
+      "format": "generic@1",
+      "graph_url": "https://raw.githubusercontent.com/openai/openai-responses-starter-app/main/graph.json",
+      "description": "OpenAI Responses API starter app — Next.js demo with multi-turn conversations, streaming, and tool integration.",
+      "tags": ["openai", "nextjs", "responses-api"],
+      "status": "missing",
+      "miss_count": 0,
+      "last_error": null
+    },
+    {
       "id": "understand-quickly/demo-code-review-graph",
       "owner": "understand-quickly",
       "repo": "demo-code-review-graph",
