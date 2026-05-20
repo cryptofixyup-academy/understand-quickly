@@ -4,7 +4,7 @@
 // prints the entry, and offers to either open a prefilled issue or open
 // a PR via `gh`.
 
-import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir, platform } from 'node:os';
 
@@ -168,36 +168,40 @@ async function action_openPr(entry, registry) {
   const tmp = mkdtempSync(join(tmpdir(), 'uq-cli-'));
   log(`  cloning ${registry} into ${tmp} ...`);
   try {
-    runInherit('gh', ['repo', 'fork', registry, '--clone=true', '--remote=true'], { cwd: tmp });
-  } catch (e) {
-    log(`  fork failed: ${e.message}. falling back to diff.`);
-    return printDiff(entry, registry);
-  }
+    try {
+      runInherit('gh', ['repo', 'fork', registry, '--clone=true', '--remote=true'], { cwd: tmp });
+    } catch (e) {
+      log(`  fork failed: ${e.message}. falling back to diff.`);
+      return printDiff(entry, registry);
+    }
 
-  const repoName = registry.split('/')[1];
-  const checkout = join(tmp, repoName);
-  const branchName = `add-${entry.id.replace('/', '-')}-${Date.now()}`;
+    const repoName = registry.split('/')[1];
+    const checkout = join(tmp, repoName);
+    const branchName = `add-${entry.id.replace('/', '-')}-${Date.now()}`;
 
-  try {
-    runCapture('git', ['checkout', '-b', branchName], { cwd: checkout });
-    const regPath = join(checkout, 'registry.json');
-    const reg = JSON.parse(readFileSync(regPath, 'utf8'));
-    const next = insertEntry(reg, entry);
-    writeFileSync(regPath, JSON.stringify(next, null, 2) + '\n');
-    runCapture('git', ['add', 'registry.json'], { cwd: checkout });
-    runCapture('git', ['commit', '-m', `Add ${entry.id} to registry`], { cwd: checkout });
-    runCapture('git', ['push', '-u', 'origin', branchName], { cwd: checkout });
-    runInherit('gh', [
-      'pr', 'create',
-      '--repo', registry,
-      '--title', `Add ${entry.id} to registry`,
-      '--body', prBody(entry),
-      '--head', `${currentForkOwner(checkout)}:${branchName}`
-    ], { cwd: checkout });
-    log('  PR opened.');
-  } catch (e) {
-    log(`  PR flow failed: ${e.message}. falling back to diff.`);
-    printDiff(entry, registry);
+    try {
+      runCapture('git', ['checkout', '-b', branchName], { cwd: checkout });
+      const regPath = join(checkout, 'registry.json');
+      const reg = JSON.parse(readFileSync(regPath, 'utf8'));
+      const next = insertEntry(reg, entry);
+      writeFileSync(regPath, JSON.stringify(next, null, 2) + '\n');
+      runCapture('git', ['add', 'registry.json'], { cwd: checkout });
+      runCapture('git', ['commit', '-m', `Add ${entry.id} to registry`], { cwd: checkout });
+      runCapture('git', ['push', '-u', 'origin', branchName], { cwd: checkout });
+      runInherit('gh', [
+        'pr', 'create',
+        '--repo', registry,
+        '--title', `Add ${entry.id} to registry`,
+        '--body', prBody(entry),
+        '--head', `${currentForkOwner(checkout)}:${branchName}`
+      ], { cwd: checkout });
+      log('  PR opened.');
+    } catch (e) {
+      log(`  PR flow failed: ${e.message}. falling back to diff.`);
+      printDiff(entry, registry);
+    }
+  } finally {
+    try { rmSync(tmp, { recursive: true, force: true }); } catch { /* best-effort */ }
   }
 }
 

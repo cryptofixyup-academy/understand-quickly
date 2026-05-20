@@ -29,7 +29,13 @@ function loadFormatSchemas() {
     const full = join(SCHEMAS_DIR, f);
     if (!statSync(full).isFile()) continue;
     const id = f.replace(/\.json$/, '');
-    out[id] = JSON.parse(readFileSync(full, 'utf8'));
+    let schema;
+    try {
+      schema = JSON.parse(readFileSync(full, 'utf8'));
+    } catch (e) {
+      throw new Error(`schema file ${full} is not valid JSON: ${e.message}`);
+    }
+    out[id] = schema;
   }
   _formatSchemas = out;
   return out;
