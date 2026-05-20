@@ -3,6 +3,22 @@
   "generated_at": "2026-05-19T06:53:15.711Z",
   "entries": [
     {
+      "id": "affaan-m/ECC",
+      "owner": "affaan-m",
+      "repo": "ECC",
+      "default_branch": "main",
+      "format": "generic@1",
+      "graph_url": "https://raw.githubusercontent.com/cryptofixyup/understand-quickly/main/site/graphs/affaan-m-ECC.json",
+      "description": "Everything Claude Code — 232 skills, 60 agents, 75 commands, hooks, rules, and contexts for Claude Code.",
+      "tags": [
+        "claude-code",
+        "skills",
+        "agents",
+        "prompts"
+      ],
+      "added_at": "2026-05-20T00:00:00.000Z"
+    },
+    {
       "id": "understand-quickly/demo-code-review-graph",
       "owner": "understand-quickly",
       "repo": "demo-code-review-graph",
