@@ -1,21 +1,51 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-05-19T06:53:16.040Z",
+  "generated_at": "2026-05-20T06:53:22.629Z",
   "totals": {
-    "entries": 3,
-    "nodes": 25,
-    "edges": 31
+    "entries": 4,
+    "nodes": 593,
+    "edges": 598
   },
   "kinds": [
+    {
+      "kind": "skill",
+      "count": 232,
+      "entries": 1
+    },
+    {
+      "kind": "rule",
+      "count": 110,
+      "entries": 1
+    },
+    {
+      "kind": "command",
+      "count": 75,
+      "entries": 1
+    },
+    {
+      "kind": "agent",
+      "count": 60,
+      "entries": 1
+    },
+    {
+      "kind": "file",
+      "count": 59,
+      "entries": 4
+    },
+    {
+      "kind": "module",
+      "count": 35,
+      "entries": 2
+    },
     {
       "kind": "function",
       "count": 7,
       "entries": 2
     },
     {
-      "kind": "file",
-      "count": 6,
-      "entries": 3
+      "kind": "context",
+      "count": 3,
+      "entries": 1
     },
     {
       "kind": "concept",
@@ -43,17 +73,17 @@
       "entries": 1
     },
     {
-      "kind": "module",
-      "count": 1,
-      "entries": 1
-    },
-    {
       "kind": "package",
       "count": 1,
       "entries": 1
     },
     {
       "kind": "project",
+      "count": 1,
+      "entries": 1
+    },
+    {
+      "kind": "repo",
       "count": 1,
       "entries": 1
     },
@@ -76,11 +106,115 @@
   "concepts": [
     {
       "term": "graph",
-      "entries": 3,
+      "entries": 4,
       "samples": [
+        "affaan-m/ECC",
         "understand-quickly/demo-code-review-graph",
-        "understand-quickly/demo-gitnexus",
+        "understand-quickly/demo-gitnexus"
+      ]
+    },
+    {
+      "term": "data",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-code-review-graph"
+      ]
+    },
+    {
+      "term": "export",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-code-review-graph"
+      ]
+    },
+    {
+      "term": "interface",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-gitnexus"
+      ]
+    },
+    {
+      "term": "main",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-code-review-graph"
+      ]
+    },
+    {
+      "term": "package",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-gitnexus"
+      ]
+    },
+    {
+      "term": "pipeline",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
         "understand-quickly/demo-understand-anything"
+      ]
+    },
+    {
+      "term": "project",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-gitnexus"
+      ]
+    },
+    {
+      "term": "readme",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-understand-anything"
+      ]
+    },
+    {
+      "term": "scripts",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-understand-anything"
+      ]
+    },
+    {
+      "term": "smoke",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-code-review-graph"
+      ]
+    },
+    {
+      "term": "sync",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-understand-anything"
+      ]
+    },
+    {
+      "term": "test",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-code-review-graph"
+      ]
+    },
+    {
+      "term": "type",
+      "entries": 2,
+      "samples": [
+        "affaan-m/ECC",
+        "understand-quickly/demo-gitnexus"
       ]
     }
   ]
