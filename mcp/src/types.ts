@@ -3,7 +3,17 @@
 // server consumes. Anything we do not use is typed as `unknown` so that we
 // stay forward-compatible with future schema additions.
 
-export type RegistryEntryStatus = "ok" | "error" | "pending" | string;
+export type RegistryEntryStatus =
+  | "ok"
+  | "missing"
+  | "invalid"
+  | "oversize"
+  | "transient_error"
+  | "dead"
+  | "renamed"
+  | "revoked"
+  | "pending"
+  | (string & {}); // forward-compat: unknown future statuses
 
 export interface RegistryEntry {
   id: string;

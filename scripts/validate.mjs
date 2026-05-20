@@ -1,6 +1,6 @@
 import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadRegistry } from './shard.mjs';
 
@@ -27,9 +27,15 @@ function loadFormatSchemas() {
   for (const f of readdirSync(SCHEMAS_DIR)) {
     if (f === 'meta.schema.json' || !f.endsWith('.json')) continue;
     const full = join(SCHEMAS_DIR, f);
-    if (!statSync(full).isFile()) continue;
     const id = f.replace(/\.json$/, '');
-    out[id] = JSON.parse(readFileSync(full, 'utf8'));
+    let schema;
+    try {
+      schema = JSON.parse(readFileSync(full, 'utf8'));
+    } catch (e) {
+      if (e.code === 'EISDIR' || e.code === 'ENOENT') continue;
+      throw new Error(`schema file ${full} is not valid JSON: ${e.message}`);
+    }
+    out[id] = schema;
   }
   _formatSchemas = out;
   return out;

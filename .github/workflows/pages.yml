@@ -70,7 +70,11 @@ jobs:
           CF_BEACON_TOKEN: ${{ secrets.CF_BEACON_TOKEN }}
         run: |
           for f in _site/index.html _site/about.html _site/add.html; do
-            [ -f "$f" ] && sed -i 's/PLACEHOLDER_TOKEN/'"$CF_BEACON_TOKEN"'/g' "$f"
+            [ -f "$f" ] && python3 -c "
+import sys, os, pathlib
+p = pathlib.Path(sys.argv[1])
+p.write_text(p.read_text().replace('PLACEHOLDER_TOKEN', os.environ['CF_BEACON_TOKEN']))
+" "$f"
           done
 
       - uses: actions/upload-pages-artifact@v3

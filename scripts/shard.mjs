@@ -85,7 +85,11 @@ export function makeMapFs(map) {
 function readJson(fs, path) {
   if (!fs.existsSync(path)) return null;
   const raw = fs.readFileSync(path, 'utf8');
-  return JSON.parse(raw);
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    throw new Error(`${path} is not valid JSON: ${e.message}`);
+  }
 }
 
 /**

@@ -63,6 +63,10 @@ jobs:
           ISSUE: ${{ github.event.issue.number }}
         run: |
           ID=$(jq -r .id /tmp/entry.json)
+          if ! [[ "$ID" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]; then
+            echo "error: parsed id has unexpected shape: $ID" >&2
+            exit 1
+          fi
           BRANCH="add/$(echo "$ID" | tr '/' '-')"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

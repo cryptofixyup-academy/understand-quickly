@@ -152,7 +152,12 @@ export function buildEntry(parsed) {
  */
 export function addEntryToRegistry(registryPath, entry) {
   const raw = readFileSync(registryPath, 'utf8');
-  const reg = JSON.parse(raw);
+  let reg;
+  try {
+    reg = JSON.parse(raw);
+  } catch (e) {
+    throw new Error(`registry at ${registryPath} is not valid JSON: ${e.message}`);
+  }
   if (!Array.isArray(reg.entries)) {
     throw new Error(`registry at ${registryPath} has no entries array`);
   }
