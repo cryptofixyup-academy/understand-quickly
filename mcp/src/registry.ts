@@ -190,7 +190,8 @@ export function findEntryById(
   registry: Registry,
   id: string,
 ): RegistryEntry | undefined {
-  return registry.entries.find((entry) => entry.id === id);
+  const lower = id.toLowerCase();
+  return registry.entries.find((entry) => entry.id.toLowerCase() === lower);
 }
 
 // SSRF guard: reject URLs that resolve to private / link-local / loopback /
