@@ -187,10 +187,10 @@ Drop [`docs/publish-template.yml`](docs/publish-template.yml) into your repo as 
 <!-- BEGIN ENTRIES -->
 | Repo | Format | Description | Status | Last synced |
 | --- | --- | --- | :---: | --- |
-| [affaan-m/ECC](https://github.com/affaan-m/ECC) | `generic@1` | Everything Claude Code: the open-agent-harness ecosystem — 232 skills, 60 agents, 75 commands, hooks, and rules. 182K+ GitHub stars. | ✅ ok | 2026-05-24 |
-| [understand-quickly/demo-code-review-graph](https://github.com/understand-quickly/demo-code-review-graph) | `code-review-graph@1` | Demo entry: a sample code-review-graph export covering files, classes, and tests. | ✅ ok | 2026-05-24 |
-| [understand-quickly/demo-gitnexus](https://github.com/understand-quickly/demo-gitnexus) | `gitnexus@1` | Demo entry: a sample GitNexus graph modeled on its own codebase. | ✅ ok | 2026-05-24 |
-| [understand-quickly/demo-understand-anything](https://github.com/understand-quickly/demo-understand-anything) | `understand-anything@1` | Demo entry: a hand-built sample knowledge graph in the understand-anything@1 shape. | ✅ ok | 2026-05-24 |
+| [affaan-m/ECC](https://github.com/affaan-m/ECC) | `generic@1` | Everything Claude Code: the open-agent-harness ecosystem — 232 skills, 60 agents, 75 commands, hooks, and rules. 182K+ GitHub stars. | ✅ ok | 2026-05-25 |
+| [understand-quickly/demo-code-review-graph](https://github.com/understand-quickly/demo-code-review-graph) | `code-review-graph@1` | Demo entry: a sample code-review-graph export covering files, classes, and tests. | ✅ ok | 2026-05-25 |
+| [understand-quickly/demo-gitnexus](https://github.com/understand-quickly/demo-gitnexus) | `gitnexus@1` | Demo entry: a sample GitNexus graph modeled on its own codebase. | ✅ ok | 2026-05-25 |
+| [understand-quickly/demo-understand-anything](https://github.com/understand-quickly/demo-understand-anything) | `understand-anything@1` | Demo entry: a hand-built sample knowledge graph in the understand-anything@1 shape. | ✅ ok | 2026-05-25 |
 <!-- END ENTRIES -->
 
 ## Status legend
