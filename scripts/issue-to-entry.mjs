@@ -165,6 +165,7 @@ export function addEntryToRegistry(registryPath, entry) {
     throw new Error(`registry already contains id ${entry.id}`);
   }
   reg.entries.push(entry);
+  reg.entries.sort((a, b) => String(a.id).localeCompare(String(b.id)));
   writeFileSync(registryPath, JSON.stringify(reg, null, 2) + '\n', 'utf8');
 }
 

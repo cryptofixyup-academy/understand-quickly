@@ -209,6 +209,42 @@ test('addEntryToRegistry round-trips: writes valid JSON, no corruption', () => {
   }
 });
 
+test('addEntryToRegistry sorts entries by id after insert', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'i2e-'));
+  const path = join(dir, 'registry.json');
+  try {
+    const initial = {
+      schema_version: 1,
+      generated_at: '2026-05-07T00:00:00Z',
+      entries: [{
+        id: 'zzz/last',
+        owner: 'zzz',
+        repo: 'last',
+        format: 'generic@1',
+        graph_url: 'https://example.com/last.json',
+        description: 'last alphabetically'
+      }]
+    };
+    writeFileSync(path, JSON.stringify(initial, null, 2) + '\n', 'utf8');
+
+    addEntryToRegistry(path, {
+      id: 'aaa/first',
+      owner: 'aaa',
+      repo: 'first',
+      format: 'generic@1',
+      graph_url: 'https://example.com/first.json',
+      description: 'first alphabetically'
+    });
+
+    const after = JSON.parse(readFileSync(path, 'utf8'));
+    assert.equal(after.entries.length, 2);
+    assert.equal(after.entries[0].id, 'aaa/first');
+    assert.equal(after.entries[1].id, 'zzz/last');
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('addEntryToRegistry refuses duplicate id', () => {
   const dir = mkdtempSync(join(tmpdir(), 'i2e-'));
   const path = join(dir, 'registry.json');
