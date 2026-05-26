@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-05-25T22:22:56.546Z",
+  "generated_at": "2026-05-26T06:51:58.057Z",
   "entries": [
     {
       "id": "affaan-m/ECC",
@@ -27,10 +27,10 @@
       "top_kinds": [],
       "languages": [],
       "source_sha": null,
-      "head_sha": null,
+      "head_sha": "928076cc08cbb31e8549cea2883b4f51811de1c8",
       "commits_behind": null,
-      "drift_checked_at": "2026-05-25T22:22:55.873Z",
-      "last_synced": "2026-05-25T22:22:55.946Z"
+      "drift_checked_at": "2026-05-26T06:51:56.598Z",
+      "last_synced": "2026-05-26T06:51:56.861Z"
     },
     {
       "id": "understand-quickly/demo-code-review-graph",
@@ -44,16 +44,39 @@
         "demo",
         "code-review-graph"
       ],
-      "status": "transient_error",
+      "status": "ok",
       "miss_count": 0,
-      "last_error": "unexpected 403",
+      "last_error": null,
       "last_sha": "db43045f1341c8ba1f20c666497bc78500fad64b411ed8a8b6836e958d58fb39",
       "size_bytes": 8545,
-      "last_synced": "2026-05-25T22:22:56.482Z",
+      "last_synced": "2026-05-26T06:51:57.300Z",
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-05-25T07:20:16.314Z"
+      "drift_checked_at": "2026-05-26T06:51:57.192Z",
+      "nodes_count": 7,
+      "edges_count": 7,
+      "top_kinds": [
+        {
+          "kind": "function",
+          "count": 4
+        },
+        {
+          "kind": "class",
+          "count": 1
+        },
+        {
+          "kind": "file",
+          "count": 1
+        },
+        {
+          "kind": "test",
+          "count": 1
+        }
+      ],
+      "languages": [
+        "python"
+      ]
     },
     {
       "id": "understand-quickly/demo-gitnexus",
@@ -67,16 +90,47 @@
         "demo",
         "gitnexus"
       ],
-      "status": "transient_error",
+      "status": "ok",
       "miss_count": 0,
-      "last_error": "unexpected 403",
+      "last_error": null,
       "last_sha": "5c9a843fa7ffda007cc4ef4fce80beb54bbdd5d8995db06b8db606980c07239a",
       "size_bytes": 8713,
-      "last_synced": "2026-05-25T22:22:56.532Z",
+      "last_synced": "2026-05-26T06:51:57.699Z",
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-05-25T07:20:16.542Z"
+      "drift_checked_at": "2026-05-26T06:51:57.592Z",
+      "nodes_count": 8,
+      "edges_count": 10,
+      "top_kinds": [
+        {
+          "kind": "interface",
+          "count": 2
+        },
+        {
+          "kind": "type",
+          "count": 2
+        },
+        {
+          "kind": "community",
+          "count": 1
+        },
+        {
+          "kind": "file",
+          "count": 1
+        },
+        {
+          "kind": "package",
+          "count": 1
+        },
+        {
+          "kind": "project",
+          "count": 1
+        }
+      ],
+      "languages": [
+        "typescript"
+      ]
     },
     {
       "id": "understand-quickly/demo-understand-anything",
@@ -91,15 +145,36 @@
         "understand-anything"
       ],
       "miss_count": 0,
-      "status": "transient_error",
-      "last_error": "unexpected 403",
-      "last_synced": "2026-05-25T22:22:56.536Z",
+      "status": "ok",
+      "last_error": null,
+      "last_synced": "2026-05-26T06:51:58.057Z",
       "last_sha": "8076fa075a94ade41b2df7f3a8f1f6a8ace220f609ec5823be51e47ab30b418b",
       "size_bytes": 4366,
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-05-25T07:20:16.711Z"
+      "drift_checked_at": "2026-05-26T06:51:57.950Z",
+      "nodes_count": 10,
+      "edges_count": 14,
+      "top_kinds": [
+        {
+          "kind": "file",
+          "count": 4
+        },
+        {
+          "kind": "function",
+          "count": 3
+        },
+        {
+          "kind": "concept",
+          "count": 2
+        },
+        {
+          "kind": "module",
+          "count": 1
+        }
+      ],
+      "languages": []
     }
   ],
   "last_drift_index": 0
