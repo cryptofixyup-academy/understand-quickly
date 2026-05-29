@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-05-28T06:59:19.068Z",
+  "generated_at": "2026-05-29T06:59:27.583Z",
   "entries": [
     {
       "id": "affaan-m/ECC",
@@ -27,10 +27,10 @@
       "top_kinds": [],
       "languages": [],
       "source_sha": null,
-      "head_sha": "928076cc08cbb31e8549cea2883b4f51811de1c8",
+      "head_sha": "64cd1ba248e77e377e76f70fc4e6434bfdddd511",
       "commits_behind": null,
-      "drift_checked_at": "2026-05-28T06:59:18.369Z",
-      "last_synced": "2026-05-28T06:59:18.550Z"
+      "drift_checked_at": "2026-05-29T06:59:27.079Z",
+      "last_synced": "2026-05-29T06:59:27.218Z"
     },
     {
       "id": "understand-quickly/demo-code-review-graph",
@@ -49,11 +49,11 @@
       "last_error": null,
       "last_sha": "db43045f1341c8ba1f20c666497bc78500fad64b411ed8a8b6836e958d58fb39",
       "size_bytes": 8545,
-      "last_synced": "2026-05-28T06:59:18.755Z",
+      "last_synced": "2026-05-29T06:59:27.375Z",
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-05-28T06:59:18.675Z",
+      "drift_checked_at": "2026-05-29T06:59:27.308Z",
       "nodes_count": 7,
       "edges_count": 7,
       "top_kinds": [
@@ -95,11 +95,11 @@
       "last_error": null,
       "last_sha": "5c9a843fa7ffda007cc4ef4fce80beb54bbdd5d8995db06b8db606980c07239a",
       "size_bytes": 8713,
-      "last_synced": "2026-05-28T06:59:18.924Z",
+      "last_synced": "2026-05-29T06:59:27.491Z",
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-05-28T06:59:18.848Z",
+      "drift_checked_at": "2026-05-29T06:59:27.433Z",
       "nodes_count": 8,
       "edges_count": 10,
       "top_kinds": [
@@ -147,13 +147,13 @@
       "miss_count": 0,
       "status": "ok",
       "last_error": null,
-      "last_synced": "2026-05-28T06:59:19.068Z",
+      "last_synced": "2026-05-29T06:59:27.583Z",
       "last_sha": "8076fa075a94ade41b2df7f3a8f1f6a8ace220f609ec5823be51e47ab30b418b",
       "size_bytes": 4366,
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-05-28T06:59:18.993Z",
+      "drift_checked_at": "2026-05-29T06:59:27.522Z",
       "nodes_count": 10,
       "edges_count": 14,
       "top_kinds": [
