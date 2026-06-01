@@ -9,7 +9,7 @@
       "default_branch": "main",
       "format": "generic@1",
       "graph_url": "https://raw.githubusercontent.com/cryptofixyup/understand-quickly/main/site/graphs/affaan-m-ECC.json",
-      "description": "Everything Claude Code: the open-agent-harness ecosystem — 232 skills, 60 agents, 75 commands, hooks, and rules. 182K+ GitHub stars.",
+      "description": "Everything Claude Code: the open-agent-harness ecosystem \u2014 232 skills, 60 agents, 75 commands, hooks, and rules. 182K+ GitHub stars.",
       "tags": [
         "claude-code",
         "skills",
@@ -31,6 +31,23 @@
       "commits_behind": null,
       "drift_checked_at": "2026-06-01T08:40:34.478Z",
       "last_synced": "2026-06-01T08:40:34.611Z"
+    },
+    {
+      "id": "kpiotr210/cle-trader",
+      "owner": "kpiotr210",
+      "repo": "cle-trader",
+      "format": "code-review-graph@1",
+      "graph_url": "https://raw.githubusercontent.com/cryptofixyup-academy/understand-quickly/b3f8b8c2a3612114753a5f54270319c62e9fb33b/site/graphs/kpiotr210-cle-trader.json",
+      "description": "Async Rust Binance trading system: WebSocket ingestion, SGMI anomaly detection, multi-agent coordinator, allocator, risk gate, and execution actor.",
+      "tags": [
+        "rust",
+        "trading",
+        "binance",
+        "async",
+        "tokio"
+      ],
+      "status": "ok",
+      "added_at": "2026-06-01T00:00:00Z"
     },
     {
       "id": "understand-quickly/demo-code-review-graph",
