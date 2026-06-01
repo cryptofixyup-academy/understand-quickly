@@ -37,7 +37,7 @@
       "owner": "kpiotr210",
       "repo": "cle-trader",
       "format": "code-review-graph@1",
-      "graph_url": "https://raw.githubusercontent.com/cryptofixyup-academy/understand-quickly/main/site/graphs/kpiotr210-cle-trader.json",
+      "graph_url": "https://raw.githubusercontent.com/cryptofixyup-academy/understand-quickly/b3f8b8c2a3612114753a5f54270319c62e9fb33b/site/graphs/kpiotr210-cle-trader.json",
       "description": "Async Rust Binance trading system: WebSocket ingestion, SGMI anomaly detection, multi-agent coordinator, allocator, risk gate, and execution actor.",
       "tags": [
         "rust",
