@@ -1,0 +1,24 @@
+# fly.toml — cle-trader on fly.io
+# Deploy:  fly launch --no-deploy  (first time)
+#          fly secrets set BINANCE_API_KEY=xxx BINANCE_SECRET=yyy
+#          fly deploy
+# Demo:    fly secrets set BINANCE_API_KEY="" BINANCE_SECRET=""
+#          fly deploy   # runs with public WS only; no orders placed
+
+app = "cle-trader"
+primary_region = "fra"  # Frankfurt — lowest latency to Binance EU endpoints
+
+[build]
+
+[env]
+  RUST_LOG = "info"
+
+# No HTTP service — cle-trader is a pure background process.
+# Fly will keep the machine running indefinitely.
+[deploy]
+  strategy = "immediate"
+
+[[vm]]
+  memory    = "256mb"
+  cpu_kind  = "shared"
+  cpus      = 1
