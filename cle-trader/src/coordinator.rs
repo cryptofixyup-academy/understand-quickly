@@ -128,8 +128,8 @@ pub fn apply_species_caps(
             .iter()
             .filter(|(_, &sw)| sw / total > species_cap)
             .max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(std::cmp::Ordering::Equal));
-        let (worst_species, _) = match worst {
-            Some(x) => x.clone(),
+        let worst_species: String = match worst {
+            Some((k, _)) => k.clone(),
             None => break,
         };
 

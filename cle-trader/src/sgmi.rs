@@ -3,9 +3,10 @@
 /// Aggregates detector scores into a single [0,1] threat index.
 /// A warm-up grace period lets the system stabilize before the gate becomes active.
 use crate::ingestion::now_ms;
+use crate::state::{SymbolState, STATE_SNAPSHOT};
 use arc_swap::ArcSwap;
 use once_cell::sync::Lazy;
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use std::sync::Arc;
 use tokio::time::{interval, Duration};
 use tracing::{info, warn};
@@ -19,6 +20,10 @@ const SGMI_MAX_AGE_MS: u64 = 2_000;
 const SGMI_WARMUP_MS: u64 = 10 * 60 * 1_000; // 10 min
 const SGMI_HARD_THRESHOLD: f64 = 0.8;
 const SGMI_SOFT_THRESHOLD: f64 = 0.5;
+/// Rolling window depth for spread and return histories (ticks ≈ seconds at 1 Hz).
+const DETECTOR_WINDOW: usize = 60;
+/// Symbols not updated within this window are counted as stale.
+const STALE_SYMBOL_MS: u64 = 5_000;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -69,9 +74,8 @@ pub struct SgmiGateResult {
 // Global cache
 // ---------------------------------------------------------------------------
 
-pub static SGMI_CACHE: Lazy<ArcSwap<SgmiScore>> = Lazy::new(|| {
-    ArcSwap::from_pointee(SgmiScore::zero(0, true))
-});
+pub static SGMI_CACHE: Lazy<ArcSwap<SgmiScore>> =
+    Lazy::new(|| ArcSwap::from_pointee(SgmiScore::zero(0, true)));
 
 pub fn update_sgmi_cache(score: SgmiScore) {
     SGMI_CACHE.store(Arc::new(score));
@@ -135,12 +139,7 @@ pub fn evaluate_sgmi_gate(now_ms: u64, override_active: bool) -> SgmiGateResult 
         SgmiGateDecision::Pass
     };
 
-    SgmiGateResult {
-        decision,
-        score,
-        age_ms,
-        override_active,
-    }
+    SgmiGateResult { decision, score, age_ms, override_active }
 }
 
 /// Returns true when deltas, if applied, would decrease gross USD exposure
@@ -171,40 +170,155 @@ pub fn reduces_gross_exposure(
 }
 
 // ---------------------------------------------------------------------------
-// Background monitor task
+// Detector state — rolling windows maintained across ticks.
 // ---------------------------------------------------------------------------
 
-/// Stub detectors — replace with real signal extraction once data sources are wired.
-fn run_eigenvalue_spike_detector() -> DetectorScore {
-    DetectorScore { name: "eigenvalue_spike", score: 0.0, weight: 0.3 }
+struct SgmiDetectorState {
+    /// Rolling mean relative bid-ask spreads (per-tick cross-symbol mean).
+    spread_history: VecDeque<f64>,
+    spread_sum: f64,
+    spread_sum_sq: f64,
+    /// Rolling market-wide mean price returns (tick-over-tick).
+    return_history: VecDeque<f64>,
+    prev_mean_mid: Option<f64>,
 }
 
+impl SgmiDetectorState {
+    fn new() -> Self {
+        Self {
+            spread_history: VecDeque::with_capacity(DETECTOR_WINDOW + 1),
+            spread_sum: 0.0,
+            spread_sum_sq: 0.0,
+            return_history: VecDeque::with_capacity(DETECTOR_WINDOW + 1),
+            prev_mean_mid: None,
+        }
+    }
+
+    fn update(&mut self, symbols: &[SymbolState]) {
+        let valid: Vec<&SymbolState> = symbols.iter().filter(|s| s.mid_price > 0.0).collect();
+        if valid.is_empty() {
+            return;
+        }
+        let n = valid.len() as f64;
+        let mean_spread =
+            valid.iter().map(|s| (s.best_ask - s.best_bid) / s.mid_price).sum::<f64>() / n;
+        let mean_mid = valid.iter().map(|s| s.mid_price).sum::<f64>() / n;
+
+        // Evict oldest sample before pushing the new one.
+        if self.spread_history.len() >= DETECTOR_WINDOW {
+            let old = self.spread_history.pop_front().unwrap();
+            self.spread_sum -= old;
+            self.spread_sum_sq -= old * old;
+        }
+        self.spread_history.push_back(mean_spread);
+        self.spread_sum += mean_spread;
+        self.spread_sum_sq += mean_spread * mean_spread;
+
+        if let Some(prev) = self.prev_mean_mid {
+            if prev > 0.0 {
+                if self.return_history.len() >= DETECTOR_WINDOW {
+                    self.return_history.pop_front();
+                }
+                self.return_history.push_back((mean_mid - prev) / prev);
+            }
+        }
+        self.prev_mean_mid = Some(mean_mid);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Detectors
+// ---------------------------------------------------------------------------
+
+/// Approximates an eigenvalue spike via z-scored aggregate bid-ask spread.
+/// A spread anomaly > 3σ above baseline is the primary observable proxy for
+/// covariance matrix eigenvalue dominance that occurs during market stress.
+fn run_eigenvalue_spike_detector(state: &SgmiDetectorState) -> DetectorScore {
+    let score = if state.spread_history.len() < 10 {
+        0.0
+    } else {
+        let n = state.spread_history.len() as f64;
+        let mean = state.spread_sum / n;
+        let variance = (state.spread_sum_sq / n) - mean * mean;
+        if variance < 1e-20 {
+            0.0
+        } else {
+            let current = *state.spread_history.back().unwrap();
+            let z = (current - mean) / variance.sqrt();
+            // Score saturates toward 1 at z = 3σ.
+            (z.max(0.0) / 3.0).min(1.0)
+        }
+    };
+    DetectorScore { name: "eigenvalue_spike", score, weight: 0.3 }
+}
+
+/// Scores pairwise cosine similarity of agent proposal target vectors.
+/// Zero until cognition agents register active proposals — herding risk
+/// (mean off-diagonal cosine similarity) would then be scored here.
 fn run_cross_agent_cosine_detector() -> DetectorScore {
     DetectorScore { name: "cross_agent_cosine", score: 0.0, weight: 0.3 }
 }
 
-fn run_temporal_autocorr_detector() -> DetectorScore {
-    DetectorScore { name: "temporal_autocorr", score: 0.0, weight: 0.2 }
+/// Lag-1 autocorrelation of the market-wide mean price return.
+/// Sustained directional momentum indicates a feedback loop or
+/// microstructure anomaly that warrants position de-risking.
+fn run_temporal_autocorr_detector(state: &SgmiDetectorState) -> DetectorScore {
+    let score = if state.return_history.len() < 10 {
+        0.0
+    } else {
+        let rets: Vec<f64> = state.return_history.iter().copied().collect();
+        let n = rets.len() as f64;
+        let mean = rets.iter().sum::<f64>() / n;
+        let variance = rets.iter().map(|r| (r - mean).powi(2)).sum::<f64>() / n;
+        if variance < 1e-20 {
+            0.0
+        } else {
+            let autocov: f64 = rets
+                .windows(2)
+                .map(|w| (w[0] - mean) * (w[1] - mean))
+                .sum::<f64>()
+                / (rets.len() - 1) as f64;
+            (autocov / variance).clamp(-1.0, 1.0).abs()
+        }
+    };
+    DetectorScore { name: "temporal_autocorr", score, weight: 0.2 }
 }
 
-fn run_ontology_failure_rate_detector() -> DetectorScore {
-    DetectorScore { name: "ontology_failure_rate", score: 0.0, weight: 0.2 }
+/// Fraction of tracked symbols whose last price event is older than
+/// STALE_SYMBOL_MS, used as a proxy for ingestion or parse failure rate.
+fn run_ontology_failure_rate_detector(now: u64, symbols: &[SymbolState]) -> DetectorScore {
+    let score = if symbols.is_empty() {
+        0.0
+    } else {
+        let stale =
+            symbols.iter().filter(|s| now.saturating_sub(s.ts_ms) > STALE_SYMBOL_MS).count();
+        stale as f64 / symbols.len() as f64
+    };
+    DetectorScore { name: "ontology_failure_rate", score, weight: 0.2 }
 }
+
+// ---------------------------------------------------------------------------
+// Background monitor task
+// ---------------------------------------------------------------------------
 
 pub async fn run_sgmi_monitor(process_start_ms: u64) {
     info!("SGMI monitor starting (warmup {}s)", SGMI_WARMUP_MS / 1_000);
     let mut tick = interval(Duration::from_millis(SGMI_PERIOD_MS));
+    let mut detector_state = SgmiDetectorState::new();
 
     loop {
         tick.tick().await;
         let now = now_ms();
         let in_warmup = now.saturating_sub(process_start_ms) < SGMI_WARMUP_MS;
 
+        let snapshot = STATE_SNAPSHOT.load();
+        detector_state.update(&snapshot.symbols);
+
         let components = vec![
-            run_eigenvalue_spike_detector(),
+            run_eigenvalue_spike_detector(&detector_state),
             run_cross_agent_cosine_detector(),
-            run_temporal_autocorr_detector(),
-            run_ontology_failure_rate_detector(),
+            run_temporal_autocorr_detector(&detector_state),
+            run_ontology_failure_rate_detector(now, &snapshot.symbols),
         ];
 
         let score = aggregate_score(&components);
