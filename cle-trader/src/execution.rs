@@ -242,6 +242,35 @@ impl BinanceRest {
         Ok(())
     }
 
+    pub async fn send_market_order(
+        &self,
+        symbol: &str,
+        side: &str,
+        qty: f64,
+        client_order_id: &str,
+    ) -> Result<()> {
+        let ts = now_ms();
+        let body = format!(
+            "symbol={}&side={}&type=MARKET&quantity={:.8}&newClientOrderId={}&timestamp={}",
+            symbol, side, qty, client_order_id, ts
+        );
+        let sig = self.sign(&body);
+        let full = format!("{}&signature={}", body, sig);
+        let resp = self
+            .client
+            .post(format!("{}/api/v3/order", BINANCE_REST_URL))
+            .header("X-MBX-APIKEY", &self.api_key)
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .body(full)
+            .send()
+            .await?;
+        if !resp.status().is_success() {
+            let text = resp.text().await.unwrap_or_default();
+            return Err(anyhow::anyhow!("send_market_order failed: {}", text));
+        }
+        Ok(())
+    }
+
     pub async fn cancel_order(&self, symbol: &str, client_order_id: &str) -> Result<()> {
         let ts = now_ms();
         let body = format!(
@@ -525,8 +554,23 @@ impl ExecutionActor {
                 if let Ok(report) = serde_json::from_str::<ExecutionReport>(txt) {
                     match report.order_status.as_str() {
                         "FILLED" | "PARTIALLY_FILLED" => {
-                            let qty: f64 = report.cumulative_qty.parse().unwrap_or(0.0);
-                            self.order_book.apply_fill(&report.client_order_id, qty);
+                            let cum_qty: f64 = report.cumulative_qty.parse().unwrap_or(0.0);
+                            // Snapshot fill delta and order metadata before mutating the book.
+                            let fill_info = self.order_book.orders.get(&report.client_order_id).map(|o| {
+                                let delta = (cum_qty - o.filled_qty).max(0.0);
+                                (o.side.clone(), o.price, o.symbol.clone(), delta)
+                            });
+                            self.order_book.apply_fill(&report.client_order_id, cum_qty);
+                            // Update position tracking for each incremental fill.
+                            if let Some((side, price, symbol, delta)) = fill_info {
+                                if delta > 1e-9 {
+                                    let sign = match side {
+                                        OrderSide::Buy => 1.0,
+                                        OrderSide::Sell => -1.0,
+                                    };
+                                    self.update_position(&symbol, sign * delta, sign * delta * price);
+                                }
+                            }
                         }
                         "CANCELED" => {
                             self.order_book.apply_cancel_ack(&report.client_order_id);
@@ -560,6 +604,24 @@ impl ExecutionActor {
             }
             _ => {}
         }
+    }
+
+    /// Accumulate a signed qty/usd delta into the in-memory position for `symbol`
+    /// and publish the updated snapshot to the global `POSITIONS_SNAPSHOT`.
+    fn update_position(&mut self, symbol: &str, delta_qty: f64, delta_usd: f64) {
+        if let Some(pos) = self.positions.positions.iter_mut().find(|p| p.symbol == symbol) {
+            pos.position_qty += delta_qty;
+            pos.position_usd += delta_usd;
+        } else {
+            self.positions.positions.push(PositionState {
+                symbol: symbol.to_string(),
+                position_qty: delta_qty,
+                position_usd: delta_usd,
+                realized_pnl: 0.0,
+            });
+        }
+        self.positions.ts_ms = now_ms();
+        POSITIONS_SNAPSHOT.store(Arc::new(self.positions.clone()));
     }
 
     async fn handle_command(&mut self, cmd: ExecutionCommand) -> Result<()> {
@@ -624,7 +686,23 @@ impl ExecutionActor {
                         }
                     }
                 }
-                // TODO: send market orders to close positions once position tracking is complete.
+                // Send market orders to close any open positions.
+                let positions_to_close: Vec<(String, f64)> = self.positions.positions
+                    .iter()
+                    .filter(|p| p.position_qty.abs() > 1e-9)
+                    .map(|p| (p.symbol.clone(), p.position_qty))
+                    .collect();
+                for (symbol, qty) in positions_to_close {
+                    let (side, close_qty) = if qty > 0.0 {
+                        ("SELL", qty)
+                    } else {
+                        ("BUY", -qty)
+                    };
+                    let coid = uuid::Uuid::new_v4().to_string();
+                    if let Err(e) = self.rest.send_market_order(&symbol, side, close_qty, &coid).await {
+                        warn!(err = %e, %symbol, "send_market_order during FlattenAll failed");
+                    }
+                }
             }
         }
         Ok(())
