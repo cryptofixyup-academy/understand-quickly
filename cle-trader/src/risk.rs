@@ -1,8 +1,9 @@
-/// Risk gate: 3-stage filter applied after allocation, before execution.
+/// Risk gate: 4-stage filter applied after allocation, before execution.
 ///
 /// Stage 1: SGMI gate (hard/soft block)
-/// Stage 2: Per-symbol exposure cap
-/// Stage 3: Portfolio leverage cap
+/// Stage 2: Drawdown limit (cumulative realized PnL floor)
+/// Stage 3: Per-symbol exposure cap
+/// Stage 4: Portfolio leverage cap
 use crate::allocator::{AllocatedDelta, RiskLimits};
 use crate::sgmi::{evaluate_sgmi_gate, reduces_gross_exposure, SgmiGateDecision};
 use crate::state::PositionsSnapshot;
@@ -77,7 +78,20 @@ pub fn evaluate_risk_gate(
         SgmiGateDecision::Pass => {}
     }
 
-    // Stage 2 + 3: per-symbol exposure + leverage.
+    // Stage 2: drawdown check — block all new activity if cumulative realized
+    // loss exceeds the configured budget.
+    let total_realized_pnl: f64 =
+        positions.positions.iter().map(|p| p.realized_pnl).sum();
+    if total_realized_pnl < -limits.max_drawdown_usd {
+        warn!(
+            realized_pnl = total_realized_pnl,
+            limit = limits.max_drawdown_usd,
+            "drawdown limit breached — rejecting all"
+        );
+        return GateResult::Rejected(RejectionReason::DrawdownLimitBreached);
+    }
+
+    // Stage 3 + 4: per-symbol exposure + leverage.
     let equity = if positions.equity_usd > 0.0 {
         positions.equity_usd
     } else {

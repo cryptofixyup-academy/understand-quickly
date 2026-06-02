@@ -26,6 +26,9 @@ pub struct RiskLimits {
     pub l_max: f64,
     /// Target inverse Herfindahl diversity index.
     pub diversity_target: f64,
+    /// Maximum cumulative realized loss (positive USD) before the gate shuts
+    /// all new position increases. Checked against sum of PositionState::realized_pnl.
+    pub max_drawdown_usd: f64,
 }
 
 impl Default for RiskLimits {
@@ -36,6 +39,7 @@ impl Default for RiskLimits {
             default_symbol_cap: 200_000.0,
             l_max: 1.0,
             diversity_target: 2.0,
+            max_drawdown_usd: 50_000.0,
         }
     }
 }
