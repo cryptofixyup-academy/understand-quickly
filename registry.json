@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-01T08:40:34.993Z",
+  "generated_at": "2026-06-02T08:00:52.255Z",
   "entries": [
     {
       "id": "affaan-m/ECC",
@@ -9,7 +9,7 @@
       "default_branch": "main",
       "format": "generic@1",
       "graph_url": "https://raw.githubusercontent.com/cryptofixyup/understand-quickly/main/site/graphs/affaan-m-ECC.json",
-      "description": "Everything Claude Code: the open-agent-harness ecosystem \u2014 232 skills, 60 agents, 75 commands, hooks, and rules. 182K+ GitHub stars.",
+      "description": "Everything Claude Code: the open-agent-harness ecosystem — 232 skills, 60 agents, 75 commands, hooks, and rules. 182K+ GitHub stars.",
       "tags": [
         "claude-code",
         "skills",
@@ -29,8 +29,8 @@
       "source_sha": null,
       "head_sha": "64cd1ba248e77e377e76f70fc4e6434bfdddd511",
       "commits_behind": null,
-      "drift_checked_at": "2026-06-01T08:40:34.478Z",
-      "last_synced": "2026-06-01T08:40:34.611Z"
+      "drift_checked_at": "2026-06-02T08:00:50.154Z",
+      "last_synced": "2026-06-02T08:00:50.530Z"
     },
     {
       "id": "kpiotr210/cle-trader",
@@ -47,7 +47,39 @@
         "tokio"
       ],
       "status": "ok",
-      "added_at": "2026-06-01T00:00:00Z"
+      "added_at": "2026-06-01T00:00:00Z",
+      "miss_count": 0,
+      "last_error": null,
+      "last_sha": "20c3c2697d5e259c4f9917eb0e3505e17f0eadbaa416ec620b48cb6f8697ca71",
+      "size_bytes": 98593,
+      "nodes_count": 91,
+      "edges_count": 185,
+      "top_kinds": [
+        {
+          "kind": "function",
+          "count": 51
+        },
+        {
+          "kind": "type",
+          "count": 25
+        },
+        {
+          "kind": "file",
+          "count": 8
+        },
+        {
+          "kind": "class",
+          "count": 7
+        }
+      ],
+      "languages": [
+        "rust"
+      ],
+      "source_sha": null,
+      "head_sha": null,
+      "commits_behind": null,
+      "drift_checked_at": "2026-06-02T08:00:50.931Z",
+      "last_synced": "2026-06-02T08:00:51.075Z"
     },
     {
       "id": "understand-quickly/demo-code-review-graph",
@@ -66,11 +98,11 @@
       "last_error": null,
       "last_sha": "db43045f1341c8ba1f20c666497bc78500fad64b411ed8a8b6836e958d58fb39",
       "size_bytes": 8545,
-      "last_synced": "2026-06-01T08:40:34.761Z",
+      "last_synced": "2026-06-02T08:00:51.500Z",
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-06-01T08:40:34.696Z",
+      "drift_checked_at": "2026-06-02T08:00:51.387Z",
       "nodes_count": 7,
       "edges_count": 7,
       "top_kinds": [
@@ -112,11 +144,11 @@
       "last_error": null,
       "last_sha": "5c9a843fa7ffda007cc4ef4fce80beb54bbdd5d8995db06b8db606980c07239a",
       "size_bytes": 8713,
-      "last_synced": "2026-06-01T08:40:34.868Z",
+      "last_synced": "2026-06-02T08:00:51.875Z",
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-06-01T08:40:34.804Z",
+      "drift_checked_at": "2026-06-02T08:00:51.761Z",
       "nodes_count": 8,
       "edges_count": 10,
       "top_kinds": [
@@ -164,13 +196,13 @@
       "miss_count": 0,
       "status": "ok",
       "last_error": null,
-      "last_synced": "2026-06-01T08:40:34.992Z",
+      "last_synced": "2026-06-02T08:00:52.255Z",
       "last_sha": "8076fa075a94ade41b2df7f3a8f1f6a8ace220f609ec5823be51e47ab30b418b",
       "size_bytes": 4366,
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-06-01T08:40:34.930Z",
+      "drift_checked_at": "2026-06-02T08:00:52.133Z",
       "nodes_count": 10,
       "edges_count": 14,
       "top_kinds": [
