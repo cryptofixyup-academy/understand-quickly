@@ -17,7 +17,7 @@ import { Buffer } from 'node:buffer';
 import { renderEntryBadge, renderCountBadge, entrySlug } from './badge.mjs';
 import { loadRegistry } from './shard.mjs';
 
-function parseArgs(argv) {
+export function parseArgs(argv) {
   const args = argv.slice(2);
   const get = (flag, def) => {
     const i = args.indexOf(flag);

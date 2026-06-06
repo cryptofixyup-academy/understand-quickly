@@ -153,7 +153,7 @@ export function renderWellKnown({ registry, outDir, base = DEFAULT_BASE }) {
   return { written, skipped, total: 3, repos: repos.repos.length };
 }
 
-function parseArgs(argv) {
+export function parseArgs(argv) {
   const args = argv.slice(2);
   const get = (flag, def) => {
     const i = args.indexOf(flag);

@@ -4,7 +4,7 @@ import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { renderEntryBadge, renderCountBadge, entrySlug, STATUS_COLOR_MAP } from '../badge.mjs';
-import { renderBadges } from '../render-badges.mjs';
+import { renderBadges, parseArgs } from '../render-badges.mjs';
 
 test('renderEntryBadge: ok-status badge contains svg, slug, and ok color', () => {
   const entry = {
@@ -149,4 +149,36 @@ test('renderBadges: skips entries missing owner/repo', () => {
   assert.equal(result.written, 2);
   const files = readdirSync(out).sort();
   assert.deepEqual(files, ['a--b.svg', 'all.svg']);
+});
+
+test('renderBadges: skips entries with malformed slug', () => {
+  const out = mkdtempSync(join(tmpdir(), 'uq-badges-slug-'));
+  const registry = {
+    entries: [
+      { id: 'a/b', owner: 'a', repo: 'b', status: 'ok' },
+      { id: '--', owner: '', repo: '', status: 'ok' }, // slug is '--', skipped
+    ]
+  };
+  const result = renderBadges({ registry, outDir: out });
+  // 2 writes: 1 valid entry + all.svg.
+  assert.equal(result.written, 2);
+  assert.equal(result.total, 2);
+});
+
+test('parseArgs: uses defaults', () => {
+  const args = parseArgs(['node', 'script.mjs']);
+  assert.equal(args.registry, 'registry.json');
+  assert.equal(args.out, 'site/badges');
+});
+
+test('parseArgs: overrides defaults with flags', () => {
+  const args = parseArgs(['node', 'script.mjs', '--registry', 'custom.json', '--out', '/tmp/out']);
+  assert.equal(args.registry, 'custom.json');
+  assert.equal(args.out, '/tmp/out');
+});
+
+test('parseArgs: handles missing flag values', () => {
+  const args = parseArgs(['node', 'script.mjs', '--registry']);
+  assert.equal(args.registry, undefined);
+  assert.equal(args.out, 'site/badges');
 });
