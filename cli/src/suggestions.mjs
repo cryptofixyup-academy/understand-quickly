@@ -1,7 +1,7 @@
 // Language detection and format suggestions.
 // Helps users choose the right tool if they don't have a graph yet.
 
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 // Detect primary language by analyzing key files in the repo.
