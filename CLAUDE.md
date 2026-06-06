@@ -47,6 +47,18 @@ npm install
 npm test         # node:test on tests/*.test.mjs
 ```
 
+#### `add` command resolution pipeline (`cli/src/add.mjs`)
+
+`understand-quickly add` runs three resolution steps before building the entry:
+
+| Step | Function | Source priority |
+|---|---|---|
+| 1 | `resolveId(flags)` | `--id` flag → `git remote get-url origin` → error |
+| 2 | `resolveGraph(flags, repoRoot)` | `--graph-url` flag → local file scan (`findGraphFiles`) → format sniff (`sniffGraphFile`) → interactive picker |
+| 3 | `resolveDescription(flags, id)` | `--description` flag → interactive prompt → `"Knowledge graph for <id>."` fallback |
+
+`resolveGraph` returns `{ format, sourcePath, sniffed }`. If no graph file exists and no `--graph-url` or `--format` is given, it throws. In non-TTY mode, interactive pickers are skipped and missing info causes hard errors.
+
 ## Architecture
 
 ### Monorepo layout
@@ -96,6 +108,12 @@ Four tools registered in `index.ts`:
 - `find_graph_for_repo` — look up by `owner/repo` id or GitHub URL, fuzzy-match on miss
 
 `registry.ts` owns all registry I/O: in-memory TTL cache (60s default), SSRF guard (blocks non-HTTPS, private IPv4/6, loopback, metadata endpoints), forward-compat `schema_version` check. Configurable via `UNDERSTAND_QUICKLY_REGISTRY` and `UNDERSTAND_QUICKLY_STATS` env vars.
+
+Source resolution in `registry.ts`:
+- `resolveRegistrySource()` — returns `UNDERSTAND_QUICKLY_REGISTRY` env var or `DEFAULT_REGISTRY_URL`
+- `resolveStatsSource()` — returns `UNDERSTAND_QUICKLY_STATS` env var or `DEFAULT_STATS_URL`
+
+Both are called at request time (not at startup), so the env vars can be changed between calls during tests.
 
 ### Graph formats
 
