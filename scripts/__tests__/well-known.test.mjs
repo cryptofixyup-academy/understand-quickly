@@ -7,7 +7,8 @@ import {
   buildAboutRecord,
   buildReposRecord,
   buildIndexRecord,
-  renderWellKnown
+  renderWellKnown,
+  parseArgs
 } from '../well-known.mjs';
 
 test('buildAboutRecord: returns valid object with all 7 service fields', () => {
@@ -149,4 +150,25 @@ test('renderWellKnown: produces valid JSON in all three files', () => {
   assert.equal(about.schema_version, 1);
   assert.equal(repos.schema_version, 1);
   assert.equal(index.schema_version, 1);
+});
+
+test('parseArgs: uses defaults', () => {
+  const args = parseArgs(['node', 'script.mjs']);
+  assert.equal(args.registry, 'registry.json');
+  assert.equal(args.out, 'site/.well-known');
+  assert.equal(args.base, 'https://looptech-ai.github.io/understand-quickly');
+});
+
+test('parseArgs: overrides defaults with flags', () => {
+  const args = parseArgs(['node', 'script.mjs', '--registry', 'custom.json', '--out', '/tmp/out', '--base', 'https://example.com']);
+  assert.equal(args.registry, 'custom.json');
+  assert.equal(args.out, '/tmp/out');
+  assert.equal(args.base, 'https://example.com');
+});
+
+test('parseArgs: handles missing flag values', () => {
+  const args = parseArgs(['node', 'script.mjs', '--registry']);
+  assert.equal(args.registry, undefined);
+  assert.equal(args.out, 'site/.well-known');
+  assert.equal(args.base, 'https://looptech-ai.github.io/understand-quickly');
 });

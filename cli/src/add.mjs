@@ -18,6 +18,7 @@ import {
 } from './format.mjs';
 import { ask, confirm, pick, isTTY } from './prompt.mjs';
 import { runCapture, tryRunCapture, runInherit, spawnDetached } from './spawn.mjs';
+import { detectPrimaryLanguage, printSuggestions } from './suggestions.mjs';
 
 const KNOWN_FORMATS = [
   'understand-anything@1',
@@ -104,6 +105,11 @@ async function resolveGraph(flags, repoRoot) {
     log('  no graph file found in common locations:');
     for (const c of GRAPH_CANDIDATES) log(`    - ${c}`);
     log('');
+
+    // Show helpful suggestions for generating a graph
+    const primaryLang = repoRoot ? detectPrimaryLanguage(repoRoot) : null;
+    printSuggestions(primaryLang);
+
     if (flags.format) {
       const path = FORMAT_TO_PATH[flags.format] || 'graph.json';
       return { format: flags.format, sourcePath: path, _missing: true };

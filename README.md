@@ -15,7 +15,7 @@ Point AI agents at any indexed repo and they get a current, schema-validated gra
 [![issues](https://img.shields.io/github/issues/looptech-ai/understand-quickly)](https://github.com/looptech-ai/understand-quickly/issues)
 [![last commit](https://img.shields.io/github/last-commit/looptech-ai/understand-quickly)](https://github.com/looptech-ai/understand-quickly/commits/main)
 
-[**Browse →**](https://looptech-ai.github.io/understand-quickly/) · [**Add your repo (wizard)**](https://looptech-ai.github.io/understand-quickly/add.html) · [**Quickstart**](#quickstart) · [**FAQ (plain English)**](docs/faq.md) · [**Contributing**](CONTRIBUTING.md)
+[**Browse →**](https://looptech-ai.github.io/understand-quickly/) · [**Add your repo (wizard)**](https://looptech-ai.github.io/understand-quickly/add.html) · [**Getting Started**](docs/getting-started.md) · [**FAQ**](docs/faq.md) · [**Contributing**](CONTRIBUTING.md)
 
 </div>
 
@@ -104,6 +104,17 @@ Then read [`CONTRIBUTING.md`](CONTRIBUTING.md).
 - **Storage:** graphs live in source repos. The registry stores only pointers.
 - **Validation:** every PR runs schema checks on `registry.json` and the graph body.
 - **Freshness:** nightly sync resyncs every entry; source repos can opt-in to instant refresh via `repository_dispatch`.
+
+## Documentation
+
+| Resource | For whom | What you'll learn |
+|----------|----------|------------------|
+| [**Getting Started**](docs/getting-started.md) | First-time users | Register your repo or fetch graphs in 2 minutes |
+| [**API Reference**](docs/api-reference.md) | Developers | Full `registry.json` schema + code examples |
+| [**SDK Guide**](docs/sdk-guide.md) | AI agents & tools | Consume the registry from JavaScript, Python, Go |
+| [**Troubleshooting**](docs/troubleshooting.md) | Maintainers | Fix validation errors, drift detection, common issues |
+| [**FAQ**](docs/faq.md) | Everyone | Plain English Q&A ("what is this?", "do I need it?") |
+| [**Spec**](docs/spec/code-graph-protocol.md) | Format designers | Full code-graph protocol specification |
 
 ## Supported formats
 
