@@ -5,3 +5,4 @@ coverage/
 test-results/
 tests/playwright/report/
 playwright/.cache/
+.claude/settings.local.json
