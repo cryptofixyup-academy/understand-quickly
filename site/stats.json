@@ -1,46 +1,16 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-07T07:10:09.723Z",
+  "generated_at": "2026-06-08T08:17:09.130Z",
   "totals": {
-    "entries": 5,
-    "nodes": 684,
-    "edges": 783
+    "entries": 4,
+    "nodes": 116,
+    "edges": 216
   },
   "kinds": [
-    {
-      "kind": "skill",
-      "count": 232,
-      "entries": 1
-    },
-    {
-      "kind": "rule",
-      "count": 110,
-      "entries": 1
-    },
-    {
-      "kind": "command",
-      "count": 75,
-      "entries": 1
-    },
-    {
-      "kind": "file",
-      "count": 67,
-      "entries": 5
-    },
-    {
-      "kind": "agent",
-      "count": 60,
-      "entries": 1
-    },
     {
       "kind": "function",
       "count": 58,
       "entries": 3
-    },
-    {
-      "kind": "module",
-      "count": 35,
-      "entries": 2
     },
     {
       "kind": "type",
@@ -48,14 +18,14 @@
       "entries": 2
     },
     {
+      "kind": "file",
+      "count": 14,
+      "entries": 4
+    },
+    {
       "kind": "class",
       "count": 8,
       "entries": 2
-    },
-    {
-      "kind": "context",
-      "count": 3,
-      "entries": 1
     },
     {
       "kind": "concept",
@@ -73,17 +43,17 @@
       "entries": 1
     },
     {
+      "kind": "module",
+      "count": 1,
+      "entries": 1
+    },
+    {
       "kind": "package",
       "count": 1,
       "entries": 1
     },
     {
       "kind": "project",
-      "count": 1,
-      "entries": 1
-    },
-    {
-      "kind": "repo",
       "count": 1,
       "entries": 1
     },
@@ -110,188 +80,19 @@
   "concepts": [
     {
       "term": "graph",
-      "entries": 4,
+      "entries": 3,
       "samples": [
-        "affaan-m/ECC",
         "understand-quickly/demo-code-review-graph",
-        "understand-quickly/demo-gitnexus"
+        "understand-quickly/demo-gitnexus",
+        "understand-quickly/demo-understand-anything"
       ]
     },
     {
       "term": "main",
-      "entries": 3,
+      "entries": 2,
       "samples": [
-        "affaan-m/ECC",
         "kpiotr210/cle-trader",
         "understand-quickly/demo-code-review-graph"
-      ]
-    },
-    {
-      "term": "agent",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "kpiotr210/cle-trader"
-      ]
-    },
-    {
-      "term": "apply",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "kpiotr210/cle-trader"
-      ]
-    },
-    {
-      "term": "cache",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "kpiotr210/cle-trader"
-      ]
-    },
-    {
-      "term": "create",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "kpiotr210/cle-trader"
-      ]
-    },
-    {
-      "term": "data",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-code-review-graph"
-      ]
-    },
-    {
-      "term": "export",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-code-review-graph"
-      ]
-    },
-    {
-      "term": "failure",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "kpiotr210/cle-trader"
-      ]
-    },
-    {
-      "term": "gate",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "kpiotr210/cle-trader"
-      ]
-    },
-    {
-      "term": "interface",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-gitnexus"
-      ]
-    },
-    {
-      "term": "loop",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "kpiotr210/cle-trader"
-      ]
-    },
-    {
-      "term": "package",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-gitnexus"
-      ]
-    },
-    {
-      "term": "pipeline",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-understand-anything"
-      ]
-    },
-    {
-      "term": "project",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-gitnexus"
-      ]
-    },
-    {
-      "term": "readme",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-understand-anything"
-      ]
-    },
-    {
-      "term": "scripts",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-understand-anything"
-      ]
-    },
-    {
-      "term": "smoke",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-code-review-graph"
-      ]
-    },
-    {
-      "term": "state",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "kpiotr210/cle-trader"
-      ]
-    },
-    {
-      "term": "sync",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-understand-anything"
-      ]
-    },
-    {
-      "term": "test",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-code-review-graph"
-      ]
-    },
-    {
-      "term": "type",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "understand-quickly/demo-gitnexus"
-      ]
-    },
-    {
-      "term": "update",
-      "entries": 2,
-      "samples": [
-        "affaan-m/ECC",
-        "kpiotr210/cle-trader"
       ]
     }
   ]
