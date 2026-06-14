@@ -5,7 +5,7 @@
       "id": "kpiotr210/cle-trader",
       "format": "code-review-graph@1",
       "graph_url": "https://raw.githubusercontent.com/cryptofixyup-academy/understand-quickly/b3f8b8c2a3612114753a5f54270319c62e9fb33b/site/graphs/kpiotr210-cle-trader.json",
-      "last_synced": "2026-06-13T07:02:33.293Z",
+      "last_synced": "2026-06-14T07:27:03.991Z",
       "status": "ok",
       "source_sha": null
     },
@@ -13,7 +13,7 @@
       "id": "understand-quickly/demo-code-review-graph",
       "format": "code-review-graph@1",
       "graph_url": "https://looptech-ai.github.io/understand-quickly/schemas/__fixtures__/code-review-graph/real-sample.json",
-      "last_synced": "2026-06-13T07:02:33.425Z",
+      "last_synced": "2026-06-14T07:27:04.118Z",
       "status": "ok",
       "source_sha": null
     },
@@ -21,7 +21,7 @@
       "id": "understand-quickly/demo-gitnexus",
       "format": "gitnexus@1",
       "graph_url": "https://looptech-ai.github.io/understand-quickly/schemas/__fixtures__/gitnexus/real-sample.json",
-      "last_synced": "2026-06-13T07:02:33.549Z",
+      "last_synced": "2026-06-14T07:27:04.227Z",
       "status": "ok",
       "source_sha": null
     },
@@ -29,7 +29,7 @@
       "id": "understand-quickly/demo-understand-anything",
       "format": "understand-anything@1",
       "graph_url": "https://looptech-ai.github.io/understand-quickly/schemas/__fixtures__/understand-anything/real-sample.json",
-      "last_synced": "2026-06-13T07:02:33.671Z",
+      "last_synced": "2026-06-14T07:27:04.318Z",
       "status": "ok",
       "source_sha": null
     }
