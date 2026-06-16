@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-15T09:29:28.871Z",
+  "generated_at": "2026-06-16T08:50:51.883Z",
   "entries": [
     {
       "id": "affaan-m/ECC",
@@ -18,7 +18,7 @@
       ],
       "added_at": "2026-05-20T00:00:00.000Z",
       "status": "dead",
-      "miss_count": 8,
+      "miss_count": 9,
       "last_error": "404",
       "last_sha": "2be6e6c1bf485f21d8dad78314e757e89913405f023208f4a4e0b25ac6f88201",
       "size_bytes": 214010,
@@ -26,7 +26,7 @@
       "head_sha": "eef31ad39ce92f437339c2b26edb1b71d3075666",
       "commits_behind": null,
       "drift_checked_at": "2026-06-07T07:10:08.768Z",
-      "last_synced": "2026-06-15T09:29:27.751Z"
+      "last_synced": "2026-06-16T08:50:50.625Z"
     },
     {
       "id": "kpiotr210/cle-trader",
@@ -74,8 +74,8 @@
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-06-15T09:29:27.999Z",
-      "last_synced": "2026-06-15T09:29:28.219Z"
+      "drift_checked_at": "2026-06-16T08:50:50.913Z",
+      "last_synced": "2026-06-16T08:50:51.094Z"
     },
     {
       "id": "understand-quickly/demo-code-review-graph",
@@ -94,11 +94,11 @@
       "last_error": null,
       "last_sha": "db43045f1341c8ba1f20c666497bc78500fad64b411ed8a8b6836e958d58fb39",
       "size_bytes": 8545,
-      "last_synced": "2026-06-15T09:29:28.478Z",
+      "last_synced": "2026-06-16T08:50:51.368Z",
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-06-15T09:29:28.369Z",
+      "drift_checked_at": "2026-06-16T08:50:51.238Z",
       "nodes_count": 7,
       "edges_count": 7,
       "top_kinds": [
@@ -140,11 +140,11 @@
       "last_error": null,
       "last_sha": "5c9a843fa7ffda007cc4ef4fce80beb54bbdd5d8995db06b8db606980c07239a",
       "size_bytes": 8713,
-      "last_synced": "2026-06-15T09:29:28.686Z",
+      "last_synced": "2026-06-16T08:50:51.651Z",
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-06-15T09:29:28.576Z",
+      "drift_checked_at": "2026-06-16T08:50:51.524Z",
       "nodes_count": 8,
       "edges_count": 10,
       "top_kinds": [
@@ -192,13 +192,13 @@
       "miss_count": 0,
       "status": "ok",
       "last_error": null,
-      "last_synced": "2026-06-15T09:29:28.871Z",
+      "last_synced": "2026-06-16T08:50:51.883Z",
       "last_sha": "8076fa075a94ade41b2df7f3a8f1f6a8ace220f609ec5823be51e47ab30b418b",
       "size_bytes": 4366,
       "source_sha": null,
       "head_sha": null,
       "commits_behind": null,
-      "drift_checked_at": "2026-06-15T09:29:28.760Z",
+      "drift_checked_at": "2026-06-16T08:50:51.754Z",
       "nodes_count": 10,
       "edges_count": 14,
       "top_kinds": [
