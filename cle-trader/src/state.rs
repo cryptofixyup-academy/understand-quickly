@@ -53,9 +53,13 @@ pub static STATE_SNAPSHOT: Lazy<ArcSwap<StateSnapshot>> =
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct PositionState {
     pub symbol: String,
-    pub position_usd: f64,  // signed: >0 long, <0 short
-    pub position_qty: f64,  // signed: >0 long, <0 short
+    pub position_usd: f64,   // signed: >0 long, <0 short (valued at avg entry price)
+    pub position_qty: f64,   // signed: >0 long, <0 short
     pub realized_pnl: f64,
+    /// Weighted-average entry price for the current open position.
+    /// Zero when there is no open position.
+    #[serde(default)]
+    pub avg_entry_px: f64,
 }
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]

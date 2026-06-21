@@ -568,7 +568,7 @@ impl ExecutionActor {
                                         OrderSide::Buy => 1.0,
                                         OrderSide::Sell => -1.0,
                                     };
-                                    self.update_position(&symbol, sign * delta, sign * delta * price);
+                                    self.update_position(&symbol, sign * delta, price);
                                 }
                             }
                         }
@@ -606,18 +606,52 @@ impl ExecutionActor {
         }
     }
 
-    /// Accumulate a signed qty/usd delta into the in-memory position for `symbol`
-    /// and publish the updated snapshot to the global `POSITIONS_SNAPSHOT`.
-    fn update_position(&mut self, symbol: &str, delta_qty: f64, delta_usd: f64) {
+    /// Update the in-memory position for `symbol` using a fill of `delta_qty` lots
+    /// at `fill_px`, track cost basis via weighted-average entry price, compute
+    /// realized PnL for any quantity that closes or flips the position, and
+    /// publish the updated snapshot to `POSITIONS_SNAPSHOT`.
+    fn update_position(&mut self, symbol: &str, delta_qty: f64, fill_px: f64) {
         if let Some(pos) = self.positions.positions.iter_mut().find(|p| p.symbol == symbol) {
-            pos.position_qty += delta_qty;
-            pos.position_usd += delta_usd;
+            let cur_qty = pos.position_qty;
+            let cur_px = pos.avg_entry_px;
+            let new_qty = cur_qty + delta_qty;
+
+            // Realized PnL: only when the fill reduces, closes, or flips the position.
+            if cur_qty.abs() > 1e-9 && cur_qty * delta_qty < 0.0 {
+                let closed = delta_qty.abs().min(cur_qty.abs());
+                // Long: profit when fill_px > entry; short: profit when fill_px < entry.
+                pos.realized_pnl += (fill_px - cur_px) * closed * cur_qty.signum();
+            }
+
+            if new_qty.abs() < 1e-9 {
+                // Fully closed.
+                pos.position_qty = 0.0;
+                pos.position_usd = 0.0;
+                pos.avg_entry_px = 0.0;
+            } else if cur_qty.abs() < 1e-9 || new_qty * cur_qty < 0.0 {
+                // New position (zero existing) or flipped direction.
+                pos.avg_entry_px = fill_px;
+                pos.position_qty = new_qty;
+                pos.position_usd = new_qty * fill_px;
+            } else if delta_qty * cur_qty > 0.0 {
+                // Adding to existing position: weighted-average entry.
+                let total = cur_qty.abs() + delta_qty.abs();
+                pos.avg_entry_px =
+                    (cur_qty.abs() * cur_px + delta_qty.abs() * fill_px) / total;
+                pos.position_qty = new_qty;
+                pos.position_usd = new_qty * pos.avg_entry_px;
+            } else {
+                // Partially reducing: entry price is unchanged for remaining qty.
+                pos.position_qty = new_qty;
+                pos.position_usd = new_qty * cur_px;
+            }
         } else {
             self.positions.positions.push(PositionState {
                 symbol: symbol.to_string(),
                 position_qty: delta_qty,
-                position_usd: delta_usd,
+                position_usd: delta_qty * fill_px,
                 realized_pnl: 0.0,
+                avg_entry_px: fill_px,
             });
         }
         self.positions.ts_ms = now_ms();
