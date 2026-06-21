@@ -12,7 +12,7 @@ use crate::execution::{spawn_execution, ExecutionCommand, OrderSide};
 use crate::ingestion::{now_ms, run_ingestion};
 use crate::risk::{evaluate_risk_gate, GateResult};
 use crate::sgmi::run_sgmi_monitor;
-use crate::state::{POSITIONS_SNAPSHOT, STATE_SNAPSHOT};
+use crate::state::{POSITIONS_SNAPSHOT, STATE_SNAPSHOT, WORKING_NOTIONAL};
 use tokio::sync::mpsc;
 use tokio::time::{interval, Duration, MissedTickBehavior};
 use tracing::info;
@@ -47,9 +47,8 @@ async fn run_cognition(exec_tx: mpsc::Sender<ExecutionCommand>) {
             continue;
         };
 
-        // Working notional stubs to zero — full accounting requires the
-        // ExecutionActor's live order book exposed as shared state.
-        let deltas = allocate(&unified, &positions, &risk_limits, &|_: &str| 0.0);
+        let working = WORKING_NOTIONAL.load();
+        let deltas = allocate(&unified, &positions, &risk_limits, &|sym: &str| working.get(sym));
         if deltas.is_empty() {
             continue;
         }

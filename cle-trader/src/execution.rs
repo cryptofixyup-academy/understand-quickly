@@ -4,7 +4,7 @@
 /// Reconnects UDS on any error, keeps listen key alive every 20 min.
 /// Shuts down gracefully on CancelAll / FlattenAll commands.
 use crate::ingestion::now_ms;
-use crate::state::{PositionState, PositionsSnapshot, POSITIONS_SNAPSHOT};
+use crate::state::{PositionState, PositionsSnapshot, POSITIONS_SNAPSHOT, WorkingNotionalSnapshot, WORKING_NOTIONAL};
 use anyhow::Result;
 use futures::{SinkExt, StreamExt};
 use hmac::{Hmac, Mac};
@@ -581,6 +581,7 @@ impl ExecutionActor {
                         _ => {}
                     }
                     self.order_book.clear_terminals();
+                    self.publish_working_notional();
                 }
             }
             "outboundAccountPosition" | "ACCOUNT_UPDATE" => {
@@ -656,6 +657,16 @@ impl ExecutionActor {
         }
         self.positions.ts_ms = now_ms();
         POSITIONS_SNAPSHOT.store(Arc::new(self.positions.clone()));
+    }
+
+    fn publish_working_notional(&self) {
+        let mut by_symbol: HashMap<String, f64> = HashMap::new();
+        for o in self.order_book.orders.values() {
+            if matches!(o.status, OrderStatus::New | OrderStatus::PartiallyFilled) {
+                *by_symbol.entry(o.symbol.clone()).or_insert(0.0) += o.working_notional();
+            }
+        }
+        WORKING_NOTIONAL.store(Arc::new(WorkingNotionalSnapshot { by_symbol }));
     }
 
     async fn handle_command(&mut self, cmd: ExecutionCommand) -> Result<()> {
@@ -739,6 +750,7 @@ impl ExecutionActor {
                 }
             }
         }
+        self.publish_working_notional();
         Ok(())
     }
 }
