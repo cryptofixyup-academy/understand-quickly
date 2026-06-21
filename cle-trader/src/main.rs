@@ -1,3 +1,4 @@
+mod agents;
 mod allocator;
 mod coordinator;
 mod execution;
@@ -6,8 +7,9 @@ mod risk;
 mod sgmi;
 mod state;
 
+use crate::agents::ofi_agent;
 use crate::allocator::{allocate, RiskLimits};
-use crate::coordinator::{coordinate, AgentProposal, CoordinatorConfig};
+use crate::coordinator::{coordinate, CoordinatorConfig};
 use crate::execution::{spawn_execution, ExecutionCommand, OrderSide};
 use crate::ingestion::{now_ms, run_ingestion};
 use crate::risk::{evaluate_risk_gate, GateResult};
@@ -39,9 +41,9 @@ async fn run_cognition(exec_tx: mpsc::Sender<ExecutionCommand>) {
         let state = STATE_SNAPSHOT.load();
         let positions = POSITIONS_SNAPSHOT.load();
 
-        // Collect proposals from registered agents.  No agents are wired yet;
-        // insert agent calls here once cognition agents are implemented.
-        let proposals: Vec<AgentProposal> = vec![];
+        // Scale factor: max $50k signed exposure per symbol at full imbalance.
+        const OFI_SCALE_USD: f64 = 50_000.0;
+        let proposals = vec![ofi_agent(&state, OFI_SCALE_USD)];
 
         let Some(unified) = coordinate(proposals, state.version, &positions, &coordinator_cfg) else {
             continue;
