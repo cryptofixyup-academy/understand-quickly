@@ -98,6 +98,8 @@ pub fn ofi_agent(
     scale_usd: f64,
 ) -> AgentProposal {
     let mut total_imbalance = 0.0f64;
+    let mut total_abs_imbalance = 0.0f64;
+    let mut total_spread_pct = 0.0f64;
     let mut count = 0usize;
 
     let actions: Vec<InstrumentAction> = state
@@ -110,6 +112,10 @@ pub fn ofi_agent(
             }
             let imbalance = (s.best_bid_qty - s.best_ask_qty) / total_qty;
             total_imbalance += imbalance;
+            total_abs_imbalance += imbalance.abs();
+            if s.mid_price > 1e-9 {
+                total_spread_pct += (s.best_ask - s.best_bid) / s.mid_price;
+            }
             count += 1;
             Some(InstrumentAction {
                 symbol: s.symbol.clone(),
@@ -119,22 +125,28 @@ pub fn ofi_agent(
         })
         .collect();
 
-    let mean_imbalance = if count > 0 { total_imbalance / count as f64 } else { 0.0 };
+    let n = count.max(1) as f64;
+    let mean_imbalance = total_imbalance / n;
+
+    // confidence: how strong is the signal? High mean |imbalance| → high confidence.
+    let confidence = (total_abs_imbalance / n).clamp(0.0, 1.0);
+
+    // risk_penalty: liquidity risk proxy — wide relative spread means poor fills.
+    // Scaled so a 1% spread saturates at 1.0; typical liquid crypto = 0.001–0.05.
+    let risk_penalty = (total_spread_pct / n * 100.0).clamp(0.0, 1.0);
+
     let total_pnl: f64 = positions.positions.iter().map(|p| p.realized_pnl).sum();
 
     agent_state.push_pnl(total_pnl);
     agent_state.push_signal(mean_imbalance);
 
-    let performance_score = agent_state.performance_score();
-    let stability_score = agent_state.stability_score();
-
     AgentProposal {
         agent_id: "ofi-v1".to_string(),
         species: "order-flow".to_string(),
         actions,
-        performance_score,
-        stability_score,
-        confidence: 0.5,
-        risk_penalty: 0.0,
+        performance_score: agent_state.performance_score(),
+        stability_score: agent_state.stability_score(),
+        confidence,
+        risk_penalty,
     }
 }

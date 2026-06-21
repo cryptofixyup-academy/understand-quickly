@@ -56,15 +56,6 @@ async fn run_cognition(exec_tx: mpsc::Sender<ExecutionCommand>) {
             }).collect(),
         }));
 
-        // Publish a minimal projection of proposals for the SGMI herding detector.
-        PROPOSALS_SNAPSHOT.store(Arc::new(ProposalsSnapshot {
-            ts_ms: state.ts_ms,
-            agents: proposals.iter().map(|p| AgentTargetVector {
-                agent_id: p.agent_id.clone(),
-                targets: p.actions.iter().map(|a| (a.symbol.clone(), a.target_usd)).collect(),
-            }).collect(),
-        }));
-
         let Some(unified) = coordinate(proposals, state.version, &positions, &coordinator_cfg) else {
             continue;
         };
