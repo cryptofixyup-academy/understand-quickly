@@ -7,7 +7,7 @@ mod risk;
 mod sgmi;
 mod state;
 
-use crate::agents::ofi_agent;
+use crate::agents::{ofi_agent, OfiAgentState};
 use crate::allocator::{allocate, RiskLimits};
 use crate::coordinator::{coordinate, CoordinatorConfig};
 use crate::execution::{spawn_execution, ExecutionCommand, OrderSide};
@@ -35,6 +35,7 @@ async fn run_cognition(exec_tx: mpsc::Sender<ExecutionCommand>) {
 
     let coordinator_cfg = CoordinatorConfig::default();
     let risk_limits = RiskLimits::default();
+    let mut ofi_state = OfiAgentState::new();
 
     loop {
         tick.tick().await;
@@ -44,7 +45,7 @@ async fn run_cognition(exec_tx: mpsc::Sender<ExecutionCommand>) {
 
         // Scale factor: max $50k signed exposure per symbol at full imbalance.
         const OFI_SCALE_USD: f64 = 50_000.0;
-        let proposals = vec![ofi_agent(&state, OFI_SCALE_USD)];
+        let proposals = vec![ofi_agent(&state, &positions, &mut ofi_state, OFI_SCALE_USD)];
 
         // Publish a minimal projection of proposals for the SGMI herding detector.
         PROPOSALS_SNAPSHOT.store(Arc::new(ProposalsSnapshot {
