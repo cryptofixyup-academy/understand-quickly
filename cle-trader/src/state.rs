@@ -1,6 +1,7 @@
 use arc_swap::ArcSwap;
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::sync::Arc;
 
 // ---------------------------------------------------------------------------
@@ -82,3 +83,23 @@ impl PositionsSnapshot {
 
 pub static POSITIONS_SNAPSHOT: Lazy<ArcSwap<PositionsSnapshot>> =
     Lazy::new(|| ArcSwap::from_pointee(PositionsSnapshot::default()));
+
+// ---------------------------------------------------------------------------
+// Working notional — owned by Execution actor, read by cognition loop
+// ---------------------------------------------------------------------------
+
+/// Signed sum of live (New + PartiallyFilled) order notional per symbol.
+/// Positive = working buy USD, negative = working sell USD.
+#[derive(Clone, Debug, Default)]
+pub struct WorkingNotionalSnapshot {
+    pub by_symbol: HashMap<String, f64>,
+}
+
+impl WorkingNotionalSnapshot {
+    pub fn get(&self, symbol: &str) -> f64 {
+        self.by_symbol.get(symbol).copied().unwrap_or(0.0)
+    }
+}
+
+pub static WORKING_NOTIONAL: Lazy<ArcSwap<WorkingNotionalSnapshot>> =
+    Lazy::new(|| ArcSwap::from_pointee(WorkingNotionalSnapshot::default()));
