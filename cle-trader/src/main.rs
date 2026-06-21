@@ -14,7 +14,8 @@ use crate::execution::{spawn_execution, ExecutionCommand, OrderSide};
 use crate::ingestion::{now_ms, run_ingestion};
 use crate::risk::{evaluate_risk_gate, GateResult};
 use crate::sgmi::run_sgmi_monitor;
-use crate::state::{POSITIONS_SNAPSHOT, STATE_SNAPSHOT, WORKING_NOTIONAL};
+use crate::state::{AgentTargetVector, POSITIONS_SNAPSHOT, PROPOSALS_SNAPSHOT, ProposalsSnapshot, STATE_SNAPSHOT, WORKING_NOTIONAL};
+use std::sync::Arc;
 use tokio::sync::mpsc;
 use tokio::time::{interval, Duration, MissedTickBehavior};
 use tracing::info;
@@ -44,6 +45,15 @@ async fn run_cognition(exec_tx: mpsc::Sender<ExecutionCommand>) {
         // Scale factor: max $50k signed exposure per symbol at full imbalance.
         const OFI_SCALE_USD: f64 = 50_000.0;
         let proposals = vec![ofi_agent(&state, OFI_SCALE_USD)];
+
+        // Publish a minimal projection of proposals for the SGMI herding detector.
+        PROPOSALS_SNAPSHOT.store(Arc::new(ProposalsSnapshot {
+            ts_ms: state.ts_ms,
+            agents: proposals.iter().map(|p| AgentTargetVector {
+                agent_id: p.agent_id.clone(),
+                targets: p.actions.iter().map(|a| (a.symbol.clone(), a.target_usd)).collect(),
+            }).collect(),
+        }));
 
         let Some(unified) = coordinate(proposals, state.version, &positions, &coordinator_cfg) else {
             continue;

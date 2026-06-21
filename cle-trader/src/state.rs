@@ -103,3 +103,25 @@ impl WorkingNotionalSnapshot {
 
 pub static WORKING_NOTIONAL: Lazy<ArcSwap<WorkingNotionalSnapshot>> =
     Lazy::new(|| ArcSwap::from_pointee(WorkingNotionalSnapshot::default()));
+
+// ---------------------------------------------------------------------------
+// Agent proposals snapshot — written by cognition loop, read by SGMI detector
+// ---------------------------------------------------------------------------
+
+/// Minimal projection of an agent's proposal: only the signed USD targets per
+/// symbol are needed to compute pairwise cosine similarity for herding detection.
+#[derive(Clone, Debug, Default)]
+pub struct AgentTargetVector {
+    pub agent_id: String,
+    /// (symbol, signed target_usd)
+    pub targets: Vec<(String, f64)>,
+}
+
+#[derive(Clone, Debug, Default)]
+pub struct ProposalsSnapshot {
+    pub ts_ms: u64,
+    pub agents: Vec<AgentTargetVector>,
+}
+
+pub static PROPOSALS_SNAPSHOT: Lazy<ArcSwap<ProposalsSnapshot>> =
+    Lazy::new(|| ArcSwap::from_pointee(ProposalsSnapshot::default()));

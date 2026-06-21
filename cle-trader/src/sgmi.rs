@@ -3,7 +3,7 @@
 /// Aggregates detector scores into a single [0,1] threat index.
 /// A warm-up grace period lets the system stabilize before the gate becomes active.
 use crate::ingestion::now_ms;
-use crate::state::{SymbolState, STATE_SNAPSHOT};
+use crate::state::{AgentTargetVector, SymbolState, PROPOSALS_SNAPSHOT, STATE_SNAPSHOT};
 use arc_swap::ArcSwap;
 use once_cell::sync::Lazy;
 use std::collections::{HashMap, VecDeque};
@@ -252,11 +252,53 @@ fn run_eigenvalue_spike_detector(state: &SgmiDetectorState) -> DetectorScore {
     DetectorScore { name: "eigenvalue_spike", score, weight: 0.3 }
 }
 
-/// Scores pairwise cosine similarity of agent proposal target vectors.
-/// Zero until cognition agents register active proposals — herding risk
-/// (mean off-diagonal cosine similarity) would then be scored here.
+/// Cosine similarity between two agent target vectors over the union of
+/// their symbol spaces (missing entries are treated as 0.0).
+fn cosine_similarity(a: &AgentTargetVector, b: &AgentTargetVector) -> f64 {
+    let b_map: HashMap<&str, f64> =
+        b.targets.iter().map(|(s, v)| (s.as_str(), *v)).collect();
+    let mut dot = 0.0f64;
+    let mut norm_a = 0.0f64;
+    let mut norm_b_sq = 0.0f64;
+    let mut b_seen: HashMap<&str, bool> = HashMap::new();
+
+    for (sym, va) in &a.targets {
+        let vb = b_map.get(sym.as_str()).copied().unwrap_or(0.0);
+        dot += va * vb;
+        norm_a += va * va;
+        norm_b_sq += vb * vb;
+        b_seen.insert(sym.as_str(), true);
+    }
+    // Accumulate norm_b for symbols only in b.
+    for (sym, vb) in &b.targets {
+        if !b_seen.contains_key(sym.as_str()) {
+            norm_b_sq += vb * vb;
+        }
+    }
+    let denom = norm_a.sqrt() * norm_b_sq.sqrt();
+    if denom < 1e-9 { 0.0 } else { (dot / denom).clamp(-1.0, 1.0) }
+}
+
+/// Mean absolute off-diagonal pairwise cosine similarity of active agent
+/// target vectors. Approaches 1.0 when all agents agree on direction and
+/// magnitude (maximum herding risk). Returns 0.0 with fewer than 2 agents.
 fn run_cross_agent_cosine_detector() -> DetectorScore {
-    DetectorScore { name: "cross_agent_cosine", score: 0.0, weight: 0.3 }
+    let snapshot = PROPOSALS_SNAPSHOT.load();
+    let agents = &snapshot.agents;
+    let score = if agents.len() < 2 {
+        0.0
+    } else {
+        let mut total = 0.0f64;
+        let mut count = 0u64;
+        for i in 0..agents.len() {
+            for j in (i + 1)..agents.len() {
+                total += cosine_similarity(&agents[i], &agents[j]).abs();
+                count += 1;
+            }
+        }
+        if count == 0 { 0.0 } else { total / count as f64 }
+    };
+    DetectorScore { name: "cross_agent_cosine", score, weight: 0.3 }
 }
 
 /// Lag-1 autocorrelation of the market-wide mean price return.
